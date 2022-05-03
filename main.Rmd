@@ -1,0 +1,15 @@
+---
+title: "Main"
+author: "Saeed Ghodsi"
+date: "5/3/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+source("data_generation.R")
+
+saeed(10)
+
+```
+
