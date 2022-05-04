@@ -1,15 +1,69 @@
 ---
-title: "Main"
+title: "Disease Progression Modeling using HMMs"
 author: "Saeed Ghodsi"
-date: "5/3/2022"
-output: html_document
+# date: "05/20/2022"
+header-includes:
+   - \usepackage{bbm}
+   - \usepackage{url}
+   - \usepackage{booktabs}
+   - \usepackage{amsfonts}
+   - \usepackage{nicefrac}
+   - \usepackage{microtype}
+   - \usepackage{xcolor}
+   - \usepackage{ae,aecompl}
+   - \usepackage{color}
+   - \usepackage{babel}
+   - \usepackage{booktabs}
+   - \usepackage{mathrsfs}
+   - \usepackage{bbm}
+   - \usepackage{xcolor}
+   - \usepackage{amsmath}
+   - \usepackage{amsthm}
+   - \usepackage{mathtools}
+   - \usepackage{amsfonts}
+   - \usepackage{graphicx}
+   - \usepackage{subfig}
+   - \usepackage{setspace}
+   - \usepackage{perpage}
+   - \usepackage{comment}
+   - \allowdisplaybreaks
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
-source("data_generation.R")
+# add the files
+source("CTHMM/setup.R")
+source("CTHMM/debugging.R")
+source("CTHMM/set_parameters.R")
+source("CTHMM/data_generation.R")
+source("CTHMM/forward_backward.R")
+source("CTHMM/end_conditioned_expectations.R")
+source("CTHMM/e_step.R")
+source("CTHMM/m_step.R")
+source("CTHMM/em_algorithm.R")
+source("CTHMM/cthmm.R")
+source("CTHMM/visualization.R")
 
-saeed(10)
+# call the initial setup function
+setup.func()
+
+```
+
+Analyze the CTHMM model:
+
+```{r, echo = TRUE, warning = FALSE}
+
+debugging.mode <- FALSE
+cthmm.func(debugging.mode)
+
+```
+
+Todo: 1- Generate step functions for better visualization
+
+```{r, echo = TRUE, warning = FALSE}
+
 
 ```
 
