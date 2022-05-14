@@ -2,25 +2,14 @@
 # initial setup
 setup.func <- function() {
   
-  # add some libraries
-  library(MASS)
-  library(tidyverse)
-  library(tinytex)
-  library(ggplot2)
-  library(plotly) 
-  library(reshape2)
-  library(graphics)
-  library(AER)
-  library(expm)
-  library(msm)
-  library(cthmm)
-  library(hmm.discnp)
-  
   # set the seed
   set.seed(1834772)
   
   # set options
   options(width = 80)
+  
+  # set the conda environment for reticulate
+  use_condaenv("r-reticulate")
   
 }
 
@@ -46,3 +35,54 @@ progress.bar <- function(counter.in, counter.max.in, flag, debugging.mode) {
   
 }
 
+
+# print the input matrix as Latex table
+latex.table.func <- function(mat.in) {
+  
+  x = xtable(mat.in, align=rep("",ncol(mat.in)+1))
+  print(x, floating=FALSE, tabular.environment="bmatrix", hline.after=NULL, include.rownames=FALSE, include.colnames=FALSE)
+  
+}
+
+
+# prepare the matrices for usage in Latex
+latex.calcs.func <- function(I, L, lambda, R, rho, Q, R.init, Q.init) {
+
+  # print the matrices into Latex tables
+  print("R: ")
+  latex.table.func(R[,,1])
+  latex.table.func(R[,,2])
+  latex.table.func(R[,,3])
+  print("Q: ")
+  latex.table.func(Q[,,1])
+  latex.table.func(Q[,,2])
+  latex.table.func(Q[,,3])
+  print("R.init: ")
+  latex.table.func(R.init[,,1])
+  latex.table.func(R.init[,,2])
+  latex.table.func(R.init[,,3])
+  print("Q.init: ")
+  latex.table.func(Q.init[,,1])
+  latex.table.func(Q.init[,,2])
+  latex.table.func(Q.init[,,3])
+  
+  # calculate Q for the example case
+  a <- 50
+  Q.example <- array(0, dim=c(I,I,L))
+  for (l in 0:(L-1)) {
+    for (i in 1:I){
+      for (k in 1:I){
+        if (k != i){
+          Q.example[i,k,l+1] <- lambda[l+1,i] * R[i,k,l+1] * exp(a * rho[i,k,l+1])
+        }
+      }
+      temp <- -sum(Q.example[i,,l+1])
+      Q.example[i,i,l+1] <- temp
+    }
+  }
+  print("Q.example: ")
+  latex.table.func(Q.example[,,1])
+  latex.table.func(Q.example[,,2])
+  latex.table.func(Q.example[,,3])
+  
+}

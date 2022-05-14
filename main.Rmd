@@ -1,7 +1,6 @@
 ---
 title: "Disease Progression Modeling using HMMs"
 author: "Saeed Ghodsi"
-# date: "05/20/2022"
 header-includes:
    - \usepackage{bbm}
    - \usepackage{url}
@@ -33,7 +32,24 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# add the files
+# add the libraries
+library(MASS)
+library(reticulate)
+library(xtable)
+library(tidyverse)
+library(tinytex)
+library(ggplot2)
+library(plotly) 
+library(reshape2)
+library(graphics)
+library(AER)
+library(expm)
+library(FNN)
+library(msm)
+library(cthmm)
+library(hmm.discnp)
+
+# add the R files
 source("CTHMM/setup.R")
 source("CTHMM/debugging.R")
 source("CTHMM/set_parameters.R")
@@ -44,10 +60,12 @@ source("CTHMM/e_step.R")
 source("CTHMM/m_step.R")
 source("CTHMM/em_algorithm.R")
 source("CTHMM/cthmm.R")
-source("CTHMM/visualization.R")
 
 # call the initial setup function
 setup.func()
+
+# add the Python files
+source_python("CTHMM/visualization.py")
 
 ```
 
@@ -55,15 +73,22 @@ Analyze the CTHMM model:
 
 ```{r, echo = TRUE, warning = FALSE}
 
+run.algorithm <- FALSE
 debugging.mode <- FALSE
-cthmm.func(debugging.mode)
-
-```
-
-Todo: 1- Generate step functions for better visualization
-
-```{r, echo = TRUE, warning = FALSE}
-
+latex.table <- FALSE
+ret.cthmm <- cthmm.func(run.algorithm, debugging.mode, latex.table)
+I <- ret.cthmm$I
+J <- ret.cthmm$J
+L <- ret.cthmm$L
+N.vals <- ret.cthmm$N.vals
+pi <- ret.cthmm$pi
+Q <- ret.cthmm$Q
+mu <- ret.cthmm$mu
+eta <- ret.cthmm$eta
+pi.hat.vals <- ret.cthmm$pi.hat.vals
+Q.hat.vals <- ret.cthmm$Q.hat.vals
+mu.hat.vals <- ret.cthmm$mu.hat.vals
+eta.hat.vals <- ret.cthmm$eta.hat.vals
 
 ```
 
