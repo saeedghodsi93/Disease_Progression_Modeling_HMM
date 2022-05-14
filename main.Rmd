@@ -46,8 +46,6 @@ library(AER)
 library(expm)
 library(FNN)
 library(msm)
-library(cthmm)
-library(hmm.discnp)
 
 # add the R files
 source("CTHMM/setup.R")
