@@ -81,6 +81,14 @@ I <- ret.cthmm$I
 J <- ret.cthmm$J
 L <- ret.cthmm$L
 N.vals <- ret.cthmm$N.vals
+H <- ret.cthmm$H
+a <- ret.cthmm$a
+tau.true <- ret.cthmm$tau.true
+tau.obs <- ret.cthmm$tau.obs
+z.true <- ret.cthmm$z.true
+z.obs <- ret.cthmm$z.obs
+y.obs <- ret.cthmm$y.obs
+u.obs <- ret.cthmm$u.obs
 pi <- ret.cthmm$pi
 Q <- ret.cthmm$Q
 mu <- ret.cthmm$mu

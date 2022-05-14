@@ -6,6 +6,49 @@ import pandas as pd
 from scipy.special import rel_entr, kl_div
 import pickle
 
+
+# store the raw data in file
+def store_raw(I, J, L, N_vals, H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
+  
+  # put the results in a dict and store them in a file
+  dict_raw = {"I": I, "J": J, "L": L, "N_vals": N_vals, "H": H, "a": a, "tau_true": tau_true, "tau_obs": tau_obs, "z_true": z_true, "z_obs": z_obs, "y_obs": y_obs, "u_obs": u_obs}
+  with open('CTHMM/Data/raw.pickle', 'wb') as handle:
+    pickle.dump(dict_raw, handle, protocol=pickle.HIGHEST_PROTOCOL)
+  
+  return
+
+
+# load the raw data from file
+def load_raw():
+  
+  # load data from file
+  with open('CTHMM/Data/raw.pickle', 'rb') as handle:
+    dict_raw = pickle.load(handle)
+  
+  return dict_raw
+
+
+# store the EM results in file
+def store_results(pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
+  
+  # put the results in a dict and store them in a file
+  dict_res = {"pi": pi, "Q": Q, "mu": mu, "eta": eta, "pi_hat_vals": pi_hat_vals, "Q_hat_vals": Q_hat_vals, "mu_hat_vals": mu_hat_vals, "eta_hat_vals": eta_hat_vals}
+  with open('CTHMM/Data/res.pickle', 'wb') as handle:
+    pickle.dump(dict_res, handle, protocol=pickle.HIGHEST_PROTOCOL)
+  
+  return
+
+
+# load the stored EM results from file
+def load_results():
+  
+  # load data from file
+  with open('CTHMM/Data/res.pickle', 'rb') as handle:
+    dict_res = pickle.load(handle)
+  
+  return dict_res
+
+
 # get the data from cthmm.R and visualize it
 def visualize_data(H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
   
@@ -56,7 +99,7 @@ def visualize_data(H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
   plt.subplots_adjust(top=0.93)
   plt.show()
   
-  fig.savefig("Results/synthetic_data.pdf", bbox_inches='tight')
+  fig.savefig("CTHMM/Results/synthetic_data.pdf", bbox_inches='tight')
 
   return
 
@@ -117,25 +160,6 @@ def calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals,
   return df_dist
 
 
-# store the EM results in file
-def store_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
-  
-  # put the results in a dict and store them in a file
-  dict_res = {"I": I, "J": J, "L": L, "N_vals": N_vals, "pi": pi, "Q": Q, "mu": mu, "eta": eta, "pi_hat_vals": pi_hat_vals, "Q_hat_vals": Q_hat_vals, "mu_hat_vals": mu_hat_vals, "eta_hat_vals": eta_hat_vals}
-  with open('Results/res.pickle', 'wb') as handle:
-    pickle.dump(dict_res, handle, protocol=pickle.HIGHEST_PROTOCOL)
-  
-  return
-
-# load the stored EM results from file
-def load_results():
-  
-  # load data from file
-  with open('Results/res.pickle', 'rb') as handle:
-    dict_res = pickle.load(handle)
-  
-  return dict_res
-
 # get the results from cthmm.R and visualize them
 def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
   
@@ -170,7 +194,7 @@ def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, 
   plt.xlabel("iteration")
   plt.ylabel("RMSE (pi)")
   plt.show()
-  fig.savefig("Results/convergence_pi.pdf", bbox_inches='tight')
+  fig.savefig("CTHMM/Results/convergence_pi.pdf", bbox_inches='tight')
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -184,7 +208,7 @@ def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, 
   plt.xlabel("iteration")
   plt.ylabel("RMSE (delta)")
   plt.show()
-  fig.savefig("Results/convergence_delta.pdf", bbox_inches='tight')
+  fig.savefig("CTHMM/Results/convergence_delta.pdf", bbox_inches='tight')
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -198,7 +222,7 @@ def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, 
   plt.xlabel("iteration")
   plt.ylabel("RMSE (mu)")
   plt.show()
-  fig.savefig("Results/convergence_mu.pdf", bbox_inches='tight')
+  fig.savefig("CTHMM/Results/convergence_mu.pdf", bbox_inches='tight')
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -212,7 +236,7 @@ def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, 
   plt.xlabel("iteration")
   plt.ylabel("RMSE (eta)")
   plt.show()
-  fig.savefig("Results/convergence_eta.pdf", bbox_inches='tight')
+  fig.savefig("CTHMM/Results/convergence_eta.pdf", bbox_inches='tight')
   
   return
 
