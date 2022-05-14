@@ -11,7 +11,7 @@ import pickle
 def store_raw(I, J, L, N_vals, H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
   
   # put the results in a dict and store them in a file
-  dict_raw = {"I": I, "J": J, "L": L, "N_vals": N_vals, "H": H, "a": a, "tau_true": tau_true, "tau_obs": tau_obs, "z_true": z_true, "z_obs": z_obs, "y_obs": y_obs, "u_obs": u_obs}
+  dict_raw = {"I": I, "J": J, "L": L, "N_vals": N_vals, "H": H, "a": a, "tau_true": tau_true, "tau_obs": tau_obs, "z_true": z_true, "z_obs": z_obs, "y_obs": git, "u_obs": u_obs}
   with open('CTHMM/Data/raw.pickle', 'wb') as handle:
     pickle.dump(dict_raw, handle, protocol=pickle.HIGHEST_PROTOCOL)
   

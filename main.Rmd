@@ -45,7 +45,7 @@ library(graphics)
 library(AER)
 library(expm)
 library(FNN)
-library(msm)
+library(msm)g
 
 # add the R files
 source("CTHMM/setup.R")
