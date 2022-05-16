@@ -8,10 +8,10 @@ import pickle
 
 
 # store the raw data in file
-def store_raw(I, J, L, N_vals, H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
+def cthmm_store_raw(I, J, L, N_vals, H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
   
   # put the results in a dict and store them in a file
-  dict_raw = {"I": I, "J": J, "L": L, "N_vals": N_vals, "H": H, "a": a, "tau_true": tau_true, "tau_obs": tau_obs, "z_true": z_true, "z_obs": z_obs, "y_obs": git, "u_obs": u_obs}
+  dict_raw = {"I": I, "J": J, "L": L, "N_vals": N_vals, "H": H, "a": a, "tau_true": tau_true, "tau_obs": tau_obs, "z_true": z_true, "z_obs": z_obs, "y_obs": y_obs, "u_obs": u_obs}
   with open('CTHMM/Data/raw.pickle', 'wb') as handle:
     pickle.dump(dict_raw, handle, protocol=pickle.HIGHEST_PROTOCOL)
   
@@ -19,7 +19,7 @@ def store_raw(I, J, L, N_vals, H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_
 
 
 # load the raw data from file
-def load_raw():
+def cthmm_load_raw():
   
   # load data from file
   with open('CTHMM/Data/raw.pickle', 'rb') as handle:
@@ -29,7 +29,7 @@ def load_raw():
 
 
 # store the EM results in file
-def store_results(pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
+def cthmm_store_results(pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
   
   # put the results in a dict and store them in a file
   dict_res = {"pi": pi, "Q": Q, "mu": mu, "eta": eta, "pi_hat_vals": pi_hat_vals, "Q_hat_vals": Q_hat_vals, "mu_hat_vals": mu_hat_vals, "eta_hat_vals": eta_hat_vals}
@@ -40,7 +40,7 @@ def store_results(pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_
 
 
 # load the stored EM results from file
-def load_results():
+def cthmm_load_results():
   
   # load data from file
   with open('CTHMM/Data/res.pickle', 'rb') as handle:
@@ -50,7 +50,7 @@ def load_results():
 
 
 # get the data from cthmm.R and visualize it
-def visualize_data(H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
+def cthmm_visualize_data(H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
   
   # choose a patient for visualization
   patient_idx = 9
@@ -105,7 +105,7 @@ def visualize_data(H, a, tau_true, tau_obs, z_true, z_obs, y_obs, u_obs):
 
 
 # KL divergence
-def kl_divergence(p, q):
+def cthmm_kl_divergence(p, q):
   
   dist = sum(kl_div(p, q))
   
@@ -113,7 +113,7 @@ def kl_divergence(p, q):
 
 
 # calculate the distances between the true variables and the em predicted variables
-def calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
+def cthmm_calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
   
   # calculate the distances for each iteration
   dist_N = []
@@ -136,7 +136,7 @@ def calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals,
       eta_hat_itr = eta_hat_vals[N_itr, em_itr,]
       
       # calculate the distance for pi
-      dist_pi.append(kl_divergence(pi, pi_hat_itr))
+      dist_pi.append(cthmm_kl_divergence(pi, pi_hat_itr))
     
       # calculate the distance for Q
       temp = 0
@@ -161,7 +161,7 @@ def calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals,
 
 
 # get the results from cthmm.R and visualize them
-def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
+def cthmm_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals):
   
   # convert the lists to numpy array and correct the integers
   N_vals = [round(N) for N in N_vals]
@@ -174,7 +174,7 @@ def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, 
   num_iterations = pi_hat_vals.shape[1]
   
   # calculate the distances
-  df_dist = calc_distances(round(I), round(J), round(L), N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals)
+  df_dist = cthmm_calc_distances(round(I), round(J), round(L), N_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals)
   
   # define the lists of colors, linestyles, and legends
   color_vals = ["tan", "maroon", "seagreen", "cadetblue"]
@@ -201,7 +201,7 @@ def visualize_results(I, J, L, N_vals, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, 
     df_dist_N = df_dist[df_dist["N"]==N_vals[N_itr]]
     plt.plot(np.asarray(df_dist_N["itr"]), np.asarray(df_dist_N["Q"]), linestyle=linestyle_vals[N_itr], marker='o', markersize=3, color=color_vals[N_itr])
   plt.xlim(left=-1, right=num_iterations)
-  plt.ylim(bottom=-0.003)
+  plt.ylim(bottom=-0.002)
   plt.grid(True, linestyle='--', linewidth=1, alpha=0.7)
   plt.legend(labels=legend_vals, loc="upper left")
   plt.title("Convergence of delta to the true value")

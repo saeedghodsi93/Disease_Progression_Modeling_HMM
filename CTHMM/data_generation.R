@@ -1,6 +1,6 @@
 
 # generate synthetic data
-data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, N, H.params, between.visit.time.params) {
+cthmm.data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, N, H.params, between.visit.time.params) {
   
   # generate the number of observations for each patient
   H <- round(rnorm(N, mean=H.params[1], sd=H.params[2]))

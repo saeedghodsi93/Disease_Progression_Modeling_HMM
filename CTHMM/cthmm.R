@@ -11,7 +11,7 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
     between.visit.time.params <- c(10,3)
     
     # set both the true and initial model parameters
-    ret.set.model.parameters <- set.model.parameters.func(latex.table)
+    ret.set.model.parameters <- cthmm.set.model.parameters.func(latex.table)
     I <- round(ret.set.model.parameters$I)
     J <- round(ret.set.model.parameters$J)
     L <- round(ret.set.model.parameters$L)
@@ -27,8 +27,8 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
     eta.init  <- ret.set.model.parameters$eta.init
     
     # run for different number of samples
-    N.vals <- c(10, 100, 1000, 10000)
-    counter.em.max <- 100
+    N.vals <- c(10, 20)
+    counter.em.max <- 10
     pi.hat.vals <- array(numeric(), dim=c(length(N.vals), counter.em.max+1, I))
     Q.hat.vals <- array(numeric(), dim=c(length(N.vals), counter.em.max+1, I,I,L))
     mu.hat.vals <- array(numeric(), dim=c(length(N.vals), counter.em.max+1, I))
@@ -39,7 +39,7 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
       N <- N.vals[N.itr]
   
       # generate synthetic data
-      ret.data.generation <- data.generation(I, J, L, pi, lambda, R, Q, mu, eta, N, H.params, between.visit.time.params)
+      ret.data.generation <- cthmm.data.generation(I, J, L, pi, lambda, R, Q, mu, eta, N, H.params, between.visit.time.params)
       H <- ret.data.generation$H
       a <- ret.data.generation$a
       tau.true <- ret.data.generation$tau.true
@@ -50,7 +50,7 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
       u.obs <- ret.data.generation$u.obs
       
       # run the EM algorithm
-      ret.EM.algorithm <- EM.algorithm.func(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.init, Q.init, mu.init, eta.init, counter.em.max, debugging.mode)
+      ret.EM.algorithm <- cthmm.EM.algorithm.func(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.init, Q.init, mu.init, eta.init, counter.em.max, debugging.mode)
       pi.hat.vals[N.itr,,] <- ret.EM.algorithm$pi.hat
       Q.hat.vals[N.itr,,,,] <- ret.EM.algorithm$Q.hat
       mu.hat.vals[N.itr,,] <- ret.EM.algorithm$mu.hat
@@ -59,15 +59,15 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
     }
     
     # store the raw data (both observed and unobserved) in file (only for the largest N)
-    store_raw(I, J, L, N.vals, H, a, tau.true, tau.obs, z.true, z.obs, y.obs, u.obs)
+    cthmm_store_raw(I, J, L, N.vals, H, a, tau.true, tau.obs, z.true, z.obs, y.obs, u.obs)
     
     # store the results in file (for all the values of N)
-    store_results(pi, Q, mu, eta, pi.hat.vals, Q.hat.vals, mu.hat.vals, eta.hat.vals)
+    cthmm_store_results(pi, Q, mu, eta, pi.hat.vals, Q.hat.vals, mu.hat.vals, eta.hat.vals)
   
   } else {
     
     # load the raw data from file (only for the largest N)
-    raw.cthmm <- load_raw()
+    raw.cthmm <- cthmm_load_raw()
     I <- round(raw.cthmm$I)
     J <- round(raw.cthmm$J)
     L <- round(raw.cthmm$L)
@@ -82,7 +82,7 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
     u.obs <- raw.cthmm$u_obs
 
     # load the results from file (for all the values of N)
-    res.cthmm <- load_results()
+    res.cthmm <- cthmm_load_results()
     pi <- res.cthmm$pi
     Q <- res.cthmm$Q
     mu <- res.cthmm$mu
@@ -95,10 +95,10 @@ cthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
   }
   
   # use Python for visualization of the data
-  visualize_data(I, J, L, N.vals, H, a, tau.true, tau.obs, z.true, z.obs, y.obs, u.obs)
+  cthmm_visualize_data(H, a, tau.true, tau.obs, z.true, z.obs, y.obs, u.obs)
   
   # use Python for visualization of the results
-  visualize_results(pi, Q, mu, eta, pi.hat.vals, Q.hat.vals, mu.hat.vals, eta.hat.vals)
+  cthmm_visualize_results(I, J, L, N.vals, pi, Q, mu, eta, pi.hat.vals, Q.hat.vals, mu.hat.vals, eta.hat.vals)
   
   ret <- list("I" = I, "J" = J, "L" = L, "N.vals" = N.vals, "H" = H, "a" = a, "tau.true" = tau.true, "tau.obs" = tau.obs, "z.true" = z.true, "z.obs" = z.obs, "y.obs" = y.obs, "u.obs" = u.obs, "pi" = pi, "Q" = Q, "mu" = mu, "eta" = eta, "pi.hat.vals" = pi.hat.vals, "Q.hat.vals" = Q.hat.vals, "mu.hat.vals" = mu.hat.vals, "eta.hat.vals" = eta.hat.vals) 
   

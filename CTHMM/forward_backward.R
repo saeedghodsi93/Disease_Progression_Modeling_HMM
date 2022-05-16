@@ -1,6 +1,6 @@
 
 # transition model
-transition.prob.func <- function(Q.in, i.in, k.in, l.in, tau.in) {
+cthmm.transition.prob.func <- function(Q.in, i.in, k.in, l.in, tau.in) {
   
   transition.mat <- expm(tau.in * Q.in[, , l.in])
   
@@ -12,7 +12,7 @@ transition.prob.func <- function(Q.in, i.in, k.in, l.in, tau.in) {
 
 
 # emission model
-emission.prob.func <- function(J, mu.in, j.in) {
+cthmm.emission.prob.func <- function(J, mu.in, j.in) {
   
   ret <- choose(J-1, j.in) * (mu.in ^ j.in) * ((1-mu.in) ^ (J-1 - j.in))
   
@@ -22,7 +22,7 @@ emission.prob.func <- function(J, mu.in, j.in) {
 
 
 # intervention model
-intervention.prob.func <- function(L, eta.in, l.in) {
+cthmm.intervention.prob.func <- function(L, eta.in, l.in) {
   
   ret <- choose(L-1, l.in) * (eta.in ^ l.in) * ((1-eta.in) ^ (L-1 - l.in))
   
@@ -32,18 +32,18 @@ intervention.prob.func <- function(L, eta.in, l.in) {
 
 
 # the forward-backward algorithm for calculating the end-state posterior probabilities
-forward.backward.func <- function(I, J, L, tau.obs, y.obs, u.obs, pi.in, Q.in, mu.in, eta.in, H.in, n) {
+cthmm.forward.backward.func <- function(I, J, L, tau.obs, y.obs, u.obs, pi.in, Q.in, mu.in, eta.in, H.in, n) {
   
   # forward probabilities
   alpha <- array(numeric(), c(H.in,I))
   for (i in 1:I) {
-    alpha[1,i] <- pi.in[i] * emission.prob.func(J, mu.in[i], y.obs[n,1]) * intervention.prob.func(L, eta.in[y.obs[n,1]+1], u.obs[n,1])
+    alpha[1,i] <- pi.in[i] * cthmm.emission.prob.func(J, mu.in[i], y.obs[n,1]) * cthmm.intervention.prob.func(L, eta.in[y.obs[n,1]+1], u.obs[n,1])
   }
   for (t in 1:(H.in-1)) {
     for (i in 1:I) {
       alpha[t+1,i] <- 0
       for (k in 1:I) {
-        alpha[t+1,i] <- alpha[t+1,i] + transition.prob.func(Q.in, k, i, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t]) * emission.prob.func(J, mu.in[i], y.obs[n,t+1]) * intervention.prob.func(L, eta.in[y.obs[n,t+1]+1], u.obs[n,t+1]) * alpha[t,k]
+        alpha[t+1,i] <- alpha[t+1,i] + cthmm.transition.prob.func(Q.in, k, i, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t]) * cthmm.emission.prob.func(J, mu.in[i], y.obs[n,t+1]) * cthmm.intervention.prob.func(L, eta.in[y.obs[n,t+1]+1], u.obs[n,t+1]) * alpha[t,k]
       }
     }
   }
@@ -53,14 +53,14 @@ forward.backward.func <- function(I, J, L, tau.obs, y.obs, u.obs, pi.in, Q.in, m
   for (i in 1:I) {
     beta[H.in-1,i] <- 0
     for (k in 1:I) {
-      beta[H.in-1,i] <- beta[H.in-1,i] + transition.prob.func(Q.in, i, k, u.obs[n,H.in-1]+1, tau.obs[n,H.in]-tau.obs[n,H.in-1]) * emission.prob.func(J, mu.in[k], y.obs[n,H.in]) * intervention.prob.func(L, eta.in[y.obs[n,H.in]+1], u.obs[n,H.in])
+      beta[H.in-1,i] <- beta[H.in-1,i] + cthmm.transition.prob.func(Q.in, i, k, u.obs[n,H.in-1]+1, tau.obs[n,H.in]-tau.obs[n,H.in-1]) * cthmm.emission.prob.func(J, mu.in[k], y.obs[n,H.in]) * cthmm.intervention.prob.func(L, eta.in[y.obs[n,H.in]+1], u.obs[n,H.in])
     }
   }
   for (t in (H.in-1):2) {
     for (i in 1:I) {
       beta[t-1,i] <- 0
       for (k in 1:I) {
-        beta[t-1,i] <- beta[t-1,i] + transition.prob.func(Q.in, i, k, u.obs[n,t-1]+1, tau.obs[n,t]-tau.obs[n,t-1]) * emission.prob.func(J, mu.in[k], y.obs[n,t]) * intervention.prob.func(L, eta.in[y.obs[n,t]+1], u.obs[n,t]) * beta[t,k]
+        beta[t-1,i] <- beta[t-1,i] + cthmm.transition.prob.func(Q.in, i, k, u.obs[n,t-1]+1, tau.obs[n,t]-tau.obs[n,t-1]) * cthmm.emission.prob.func(J, mu.in[k], y.obs[n,t]) * cthmm.intervention.prob.func(L, eta.in[y.obs[n,t]+1], u.obs[n,t]) * beta[t,k]
       } 
     }
   }
@@ -85,7 +85,7 @@ forward.backward.func <- function(I, J, L, tau.obs, y.obs, u.obs, pi.in, Q.in, m
   temp <- array(numeric(), c(I,I))
   for (i in 1:I) {
     for (k in 1:I) {
-      temp[i,k] <- transition.prob.func(Q.in, i, k, u.obs[n,H.in-1]+1, tau.obs[n,H.in]-tau.obs[n,H.in-1]) * emission.prob.func(J, mu.in[k], y.obs[n,H.in]) * intervention.prob.func(L, eta.in[y.obs[n,H.in]+1], u.obs[n,H.in]) * alpha[H.in-1,i]
+      temp[i,k] <- cthmm.transition.prob.func(Q.in, i, k, u.obs[n,H.in-1]+1, tau.obs[n,H.in]-tau.obs[n,H.in-1]) * cthmm.emission.prob.func(J, mu.in[k], y.obs[n,H.in]) * cthmm.intervention.prob.func(L, eta.in[y.obs[n,H.in]+1], u.obs[n,H.in]) * alpha[H.in-1,i]
     }
   }
   for (i in 1:I) {
@@ -97,7 +97,7 @@ forward.backward.func <- function(I, J, L, tau.obs, y.obs, u.obs, pi.in, Q.in, m
     temp <- array(numeric(), c(I,I))
     for (i in 1:I) {
       for (k in 1:I) {
-        temp[i,k] <- transition.prob.func(Q.in, i, k, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t]) * emission.prob.func(J, mu.in[k], y.obs[n,t+1]) * intervention.prob.func(L, eta.in[y.obs[n,t+1]+1], u.obs[n,t+1]) * alpha[t,i] * beta[t+1,k]
+        temp[i,k] <- cthmm.transition.prob.func(Q.in, i, k, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t]) * cthmm.emission.prob.func(J, mu.in[k], y.obs[n,t+1]) * cthmm.intervention.prob.func(L, eta.in[y.obs[n,t+1]+1], u.obs[n,t+1]) * alpha[t,i] * beta[t+1,k]
       }
     }
     for (i in 1:I) {

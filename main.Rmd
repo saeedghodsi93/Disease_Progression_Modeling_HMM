@@ -45,7 +45,7 @@ library(graphics)
 library(AER)
 library(expm)
 library(FNN)
-library(msm)g
+library(msm)
 
 # add the R files
 source("CTHMM/setup.R")
@@ -58,43 +58,98 @@ source("CTHMM/e_step.R")
 source("CTHMM/m_step.R")
 source("CTHMM/em_algorithm.R")
 source("CTHMM/cthmm.R")
+source("DTHMM/set_parameters.R")
+source("DTHMM/data_generation.R")
+source("DTHMM/forward_backward.R")
+source("DTHMM/gibbs_sampling.R")
+source("DTHMM/e_step.R")
+source("DTHMM/m_step.R")
+source("DTHMM/em_algorithm.R")
+source("DTHMM/dthmm.R")
 
 # call the initial setup function
 setup.func()
 
 # add the Python files
 source_python("CTHMM/visualization.py")
+source_python("DTHMM/visualization.py")
+
+# choose which model to run ("DTHMM" or "CTHMM")
+model.type <- "DTHMM"
+
+# set the operation modes
+run.algorithm <- TRUE
+debugging.mode <- FALSE
+latex.table <- FALSE
+   
+```
+
+
+Analyze the DTHMM model:
+
+```{r, echo = TRUE, warning = FALSE}
+
+# run the DT-HMM model
+if (model.type == "DTHMM") {
+   
+   ret.dthmm <- dthmm.func(run.algorithm, debugging.mode, latex.table)
+   I <- ret.dthmm$I
+   J <- ret.dthmm$J
+   L <- ret.dthmm$L
+   N.vals <- ret.dthmm$N.vals
+   M.vals <- ret.dthmm$M.vals
+   H <- ret.dthmm$H
+   z <- ret.dthmm$z
+   y <- ret.dthmm$y
+   u <- ret.dthmm$u
+   pi <- ret.dthmm$pi
+   Q <- ret.dthmm$Q
+   mu <- ret.dthmm$mu
+   eta <- ret.dthmm$eta
+   pi.hat.vals <- ret.dthmm$pi.hat.vals
+   Q.hat.vals <- ret.dthmm$Q.hat.vals
+   mu.hat.vals <- ret.dthmm$mu.hat.vals
+   eta.hat.vals <- ret.dthmm$eta.hat.vals
+   total.time <- ret.dthmm$total.time
+   
+}
 
 ```
+
 
 Analyze the CTHMM model:
 
 ```{r, echo = TRUE, warning = FALSE}
 
-run.algorithm <- FALSE
-debugging.mode <- FALSE
-latex.table <- FALSE
-ret.cthmm <- cthmm.func(run.algorithm, debugging.mode, latex.table)
-I <- ret.cthmm$I
-J <- ret.cthmm$J
-L <- ret.cthmm$L
-N.vals <- ret.cthmm$N.vals
-H <- ret.cthmm$H
-a <- ret.cthmm$a
-tau.true <- ret.cthmm$tau.true
-tau.obs <- ret.cthmm$tau.obs
-z.true <- ret.cthmm$z.true
-z.obs <- ret.cthmm$z.obs
-y.obs <- ret.cthmm$y.obs
-u.obs <- ret.cthmm$u.obs
-pi <- ret.cthmm$pi
-Q <- ret.cthmm$Q
-mu <- ret.cthmm$mu
-eta <- ret.cthmm$eta
-pi.hat.vals <- ret.cthmm$pi.hat.vals
-Q.hat.vals <- ret.cthmm$Q.hat.vals
-mu.hat.vals <- ret.cthmm$mu.hat.vals
-eta.hat.vals <- ret.cthmm$eta.hat.vals
+# run the CT-HMM model
+if (model.type == "CTHMM") {
+
+   ret.cthmm <- cthmm.func(run.algorithm, debugging.mode, latex.table)
+   I <- ret.cthmm$I
+   J <- ret.cthmm$J
+   L <- ret.cthmm$L
+   N.vals <- ret.cthmm$N.vals
+   H <- ret.cthmm$H
+   a <- ret.cthmm$a
+   tau.true <- ret.cthmm$tau.true
+   tau.obs <- ret.cthmm$tau.obs
+   z.true <- ret.cthmm$z.true
+   z.obs <- ret.cthmm$z.obs
+   y.obs <- ret.cthmm$y.obs
+   u.obs <- ret.cthmm$u.obs
+   pi <- ret.cthmm$pi
+   Q <- ret.cthmm$Q
+   mu <- ret.cthmm$mu
+   eta <- ret.cthmm$eta
+   pi.hat.vals <- ret.cthmm$pi.hat.vals
+   Q.hat.vals <- ret.cthmm$Q.hat.vals
+   mu.hat.vals <- ret.cthmm$mu.hat.vals
+   eta.hat.vals <- ret.cthmm$eta.hat.vals
+   
+}
 
 ```
 
+```{r, echo = TRUE, warning = FALSE}
+  
+```

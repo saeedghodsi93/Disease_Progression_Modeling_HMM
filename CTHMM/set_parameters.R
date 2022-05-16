@@ -1,6 +1,6 @@
 
 # set the model parameters
-set.model.parameters.func <- function(latex.table) {
+cthmm.set.model.parameters.func <- function(latex.table) {
   
   # the number of possible hidden states, number of possible observations, and number of possible interventions
   I <- 3
@@ -82,7 +82,7 @@ set.model.parameters.func <- function(latex.table) {
   
   # print the true and initial parameters in Latex tables
   if (latex.table == TRUE) {
-    latex.calcs.func(I, L, lambda, R, rho, Q, R.init, Q.init)
+    cthmm.latex.calcs.func(I, L, lambda, R, rho, Q, R.init, Q.init)
   }
   
   ret <- list("I"=I, "J"=J, "L"=L,

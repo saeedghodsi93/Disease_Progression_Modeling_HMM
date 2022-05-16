@@ -1,6 +1,6 @@
 
 # EM algorithm
-cthmm.EM.algorithm.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.init, Q.init, mu.init, eta.init, counter.em.max, debugging.mode) {
+dthmm.EM.algorithm.func <- function(N, M, B, I, J, L, H, y, u, pi.init, Q.init, mu.init, eta.init, counter.em.max, debugging.mode) {
   
   # arrays for keeping track of the parameters
   pi.hat <- array(numeric(), dim=c(counter.em.max+1,I))
@@ -26,14 +26,14 @@ cthmm.EM.algorithm.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.
     progress.bar(counter.em, counter.em.max, TRUE, debugging.mode)
     
     # E-step 
-    ret.E.step <- cthmm.E.step.func(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde)
+    ret.E.step <- dthmm.E.step.func(N, M, B, I, J, L, H, y, u, pi.tilde, Q.tilde, mu.tilde, eta.tilde)
     sufficient.pi <- ret.E.step$sufficient.pi
     sufficient.Q <- ret.E.step$sufficient.Q
     sufficient.mu <- ret.E.step$sufficient.mu
     sufficient.eta <- ret.E.step$sufficient.eta
     
     # M-step
-    ret.M.step <- cthmm.M.step.func(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta)
+    ret.M.step <- dthmm.M.step.func(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta)
     pi.tilde <- ret.M.step$pi.tilde
     Q.tilde <- ret.M.step$Q.tilde
     mu.tilde <- ret.M.step$mu.tilde

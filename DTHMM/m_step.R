@@ -1,6 +1,6 @@
 
 # M-step
-cthmm.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta) {
+dthmm.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta) {
   
   # update pi
   pi.tilde <- array(numeric(), dim=c(I))
@@ -11,15 +11,10 @@ cthmm.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.m
   # update Q
   Q.tilde <- array(numeric(), dim=c(I,I,L))
   for (i in 1:I) {
-    for (l in 0:(L-1)) {
-      temp <- 0
-      for (k in 1:I) {
-        if (k != i) {
-          Q.tilde[i,k,l+1] <- sufficient.Q[i,k,l+1,1] / sufficient.Q[i,k,l+1,2]
-          temp <- temp + Q.tilde[i,k,l+1]
-        }
+    for (k in 1:I) {
+      for (l in 0:(L-1)) {
+        Q.tilde[i,k,l+1] <- sufficient.Q[i,k,l+1] / sum(sufficient.Q[i,,l+1])
       }
-      Q.tilde[i,i,l+1] <- -temp 
     }
   }
   

@@ -1,6 +1,6 @@
 
 # E-step using the forward-backward algorithm
-E.step.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde) {
+cthmm.E.step.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde) {
   
   sufficient.pi <- array(0, c(I))
   sufficient.Q <- array(0, c(I,I,L,2))
@@ -10,7 +10,7 @@ E.step.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.tilde, Q.til
     H.n <- H[n]
     
     # calculate the posterior probabilities of the end states
-    ret.forward.backward <- forward.backward.func(I, J, L, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, H.n, n)
+    ret.forward.backward <- cthmm.forward.backward.func(I, J, L, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, H.n, n)
     gamma <- ret.forward.backward$gamma
     nu <- ret.forward.backward$nu
       
@@ -20,7 +20,7 @@ E.step.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.tilde, Q.til
     for (t in 1:(H.n-1)) {
       
       # calculate the end state conditioned expected number of transitions and sojourn times in each period
-      ret.end.conditioned.expectations <- end.conditioned.expectations.func(I, Q.tilde, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t])
+      ret.end.conditioned.expectations <- cthmm.end.conditioned.expectations.func(I, Q.tilde, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t])
       transition.mat <- ret.end.conditioned.expectations$transition.mat
       sojourn.time <- ret.end.conditioned.expectations$sojourn.time
       

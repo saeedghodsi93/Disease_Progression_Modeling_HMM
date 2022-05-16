@@ -46,7 +46,23 @@ latex.table.func <- function(mat.in) {
 
 
 # prepare the matrices for usage in Latex
-latex.calcs.func <- function(I, L, lambda, R, rho, Q, R.init, Q.init) {
+dthmm.latex.calcs.func <- function(Q, Q.init) {
+  
+  # print the matrices into Latex tables
+  print("Q: ")
+  latex.table.func(Q[,,1])
+  latex.table.func(Q[,,2])
+  latex.table.func(Q[,,3])
+  print("Q.init: ")
+  latex.table.func(Q.init[,,1])
+  latex.table.func(Q.init[,,2])
+  latex.table.func(Q.init[,,3])
+  
+}
+
+
+# prepare the matrices for usage in Latex
+cthmm.latex.calcs.func <- function(I, L, lambda, R, rho, Q, R.init, Q.init) {
 
   # print the matrices into Latex tables
   print("R: ")
