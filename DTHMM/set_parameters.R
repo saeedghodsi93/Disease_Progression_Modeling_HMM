@@ -13,15 +13,15 @@ dthmm.set.model.parameters.func <- function(latex.table) {
   pi <- c(0.25, 0.45, 0.30)
   
   # the parameters of the transition probability matrix
-  Q <- array(c(0.1, 0.5, 0.4,  0.1, 0.3, 0.6,  0.1, 0.1, 0.8,
-               0.2, 0.6, 0.2,  0.2, 0.3, 0.5,  0.1, 0.3, 0.6,
-               0.4, 0.5, 0.1,  0.4, 0.3, 0.3,  0.2, 0.4, 0.4), dim=c(I, I, L))
+  Q <- array(c(0.20, 0.45, 0.35,  0.10, 0.30, 0.60,  0.10, 0.15, 0.75,
+               0.40, 0.40, 0.20,  0.30, 0.25, 0.45,  0.10, 0.30, 0.60,
+               0.55, 0.30, 0.15,  0.40, 0.35, 0.25,  0.20, 0.45, 0.35), dim=c(I, I, L))
   Q[,,1] <- t(Q[,,1])
   Q[,,2] <- t(Q[,,2])
   Q[,,3] <- t(Q[,,3])
   
   # the parameters of the emission and intervention distributions
-  mu <- c(0.1, 0.5, 0.9)
+  mu <- c(0.15, 0.5, 0.8)
   eta <- c(0.04, 0.15, 0.26, 0.32, 0.43, 0.51, 0.62, 0.77, 0.81, 0.90)
   
   
@@ -30,11 +30,14 @@ dthmm.set.model.parameters.func <- function(latex.table) {
   # the initial probability of the hidden state
   pi.init <- c(1/3, 1/3, 1/3)
   
-  # the parameters of the transition probability matrix
+  # the initial parameters of the transition probability matrix
   Q.init <- array(numeric(), c(I,I,L))
-  Q.init[,,1] <- exp(matrix(c(log(0.35), log(0.45), log(0.2),  log(0.3), log(0.3), log(0.4),  log(0.2), log(0.2), log(0.6)), nrow=I, ncol=I, byrow=TRUE))
-  Q.init[,,2] <- exp(matrix(c(log(0.45), log(0.4), log(0.15),  log(0.3), log(0.5), log(0.2),  log(0.1), log(0.4), log(0.5)), nrow=I, ncol=I, byrow=TRUE))
-  Q.init[,,3] <- exp(matrix(c(log(0.55), log(0.35), log(0.1),  log(0.5), log(0.3), log(0.2),  log(0.2), log(0.5), log(0.3)), nrow=I, ncol=I, byrow=TRUE))
+  Q.init <- array(c(0.60, 0.20, 0.20,  0.40, 0.40, 0.20,  0.40, 0.30, 0.30,
+                    0.20, 0.50, 0.30,  0.50, 0.30, 0.20,  0.20, 0.50, 0.30,
+                    0.20, 0.40, 0.40,  0.40, 0.10, 0.50,  0.30, 0.10, 0.60), dim=c(I, I, L))
+  Q.init[,,1] <- t(Q.init[,,1])
+  Q.init[,,2] <- t(Q.init[,,2])
+  Q.init[,,3] <- t(Q.init[,,3])
   
   # the parameters of the emission and intervention distributions
   mu.init <- c(0.45, 0.65, 0.7)

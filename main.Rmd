@@ -79,8 +79,8 @@ model.type <- "DTHMM"
 
 # set the operation modes
 run.algorithm <- TRUE
-debugging.mode <- FALSE
-latex.table <- FALSE
+debugging.mode <- TRUE
+latex.table <- TRUE
    
 ```
 

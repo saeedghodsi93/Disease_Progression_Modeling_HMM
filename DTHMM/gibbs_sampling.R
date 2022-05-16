@@ -30,11 +30,11 @@ dthmm.gibbs.sampling.func <- function(I, J, L, y, u, pi.tilde, Q.tilde, mu.tilde
       # normalize the probabilities 
       if(is.na(sum(temp))) {
         for (i in 1:I) {
-          z.prob[i] <- 1 / I
+          z.prob[i] <- pi.tilde[i]
         }  
       } else if (sum(temp) == 0) {
         for (i in 1:I) {
-          z.prob[i] <- 1 / I
+          z.prob[i] <- pi.tilde[i]
         }
       } else {
         for (i in 1:I) {
