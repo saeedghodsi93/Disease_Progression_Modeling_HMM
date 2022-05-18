@@ -78,9 +78,9 @@ source_python("DTHMM/visualization.py")
 model.type <- "DTHMM"
 
 # set the operation modes
-run.algorithm <- TRUE
-debugging.mode <- TRUE
-latex.table <- TRUE
+run.algorithm <- FALSE
+debugging.mode <- FALSE
+latex.table <- FALSE
    
 ```
 

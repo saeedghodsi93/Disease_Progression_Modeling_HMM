@@ -175,9 +175,9 @@ def dthmm_visualize_results(I, J, L, N_vals, M_vals, pi, Q, mu, eta, pi_hat_vals
   
   # calculate the distances
   df_dist = dthmm_calc_distances(round(I), round(J), round(L), N_vals, M_vals, num_iterations, pi, Q, mu, eta, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals)
-  
+    
   # define the lists of colors, linestyles, and legends
-  color_vals = [["tan", "maroon"], ["seagreen", "cadetblue"]]
+  color_vals = [["tan", "maroon"], ["purple", "cadetblue"]]
   linestyle_vals = [["-", "-"], ["--", "--"]]
   marker_vals = [["o", "o"], ["x", "x"]]
   legend_vals = []

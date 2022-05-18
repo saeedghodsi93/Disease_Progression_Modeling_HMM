@@ -26,7 +26,7 @@ dthmm.func <- function(run.algorithm, debugging.mode, latex.table) {
     eta.init  <- ret.set.model.parameters$eta.init
     
     # run for different number of data samples and Monte-Carlo samples (set M=0 for using the direct forward-backward approach instead of Gibbs sampling)
-    N.vals <- c(100, 10000)
+    N.vals <- c(1000, 10000)
     M.vals <- c(100, 0)
     counter.em.max <- 100
     pi.hat.vals <- array(numeric(), dim=c(length(N.vals), length(M.vals), counter.em.max+1, I))
