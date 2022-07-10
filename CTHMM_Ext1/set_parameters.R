@@ -46,6 +46,7 @@ cthmm.ext1.set.model.parameters.func <- function(latex.table) {
   # the parameters of the emission and intervention distributions
   mu <- c(0.1, 0.5, 0.9)
   eta <- c(0.04, 0.15, 0.26, 0.32, 0.43, 0.51, 0.62, 0.77, 0.81, 0.90)
+  eta.prime <- c(0.3, 0.65, 0.85)
   
   
   ##### set the initial model parameters  
@@ -79,6 +80,8 @@ cthmm.ext1.set.model.parameters.func <- function(latex.table) {
   # the parameters of the emission and intervention distributions
   mu.init <- c(0.45, 0.65, 0.7)
   eta.init <- c(0.01, 0.03, 0.06, 0.08, 0.45, 0.48, 0.51, 0.55, 0.91, 0.97)
+  eta.prime.init <- c(0.1, 0.35, 0.95)
+  
   
   # print the true and initial parameters in Latex tables
   if (latex.table == TRUE) {
@@ -86,8 +89,8 @@ cthmm.ext1.set.model.parameters.func <- function(latex.table) {
   }
   
   ret <- list("I"=I, "J"=J, "L"=L,
-              "pi" = pi, "lambda"=lambda, "R"=R, "Q" = Q, "mu" = mu, "eta" = eta,
-              "pi.init" = pi.init, "Q.init" = Q.init, "mu.init" = mu.init, "eta.init" = eta.init)
+              "pi" = pi, "lambda"=lambda, "R"=R, "Q" = Q, "mu" = mu, "eta" = eta, "eta.prime" = eta.prime,
+              "pi.init" = pi.init, "Q.init" = Q.init, "mu.init" = mu.init, "eta.init" = eta.init, "eta.prime.init" = eta.prime.init)
   
   return(ret)
   

@@ -1,16 +1,17 @@
 
 # E-step using the forward-backward algorithm
-cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde) {
+cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde) {
   
   sufficient.pi <- array(0, c(I))
   sufficient.Q <- array(0, c(I,I,L,2))
   sufficient.mu <- array(0, c(I,J))
   sufficient.eta <- array(0, c(J,L))
+  sufficient.eta.prime <- array(0, c(J,L))
   for (n in 1:N) {
     H.n <- H[n]
     
     # calculate the posterior probabilities of the end states
-    ret.forward.backward <- cthmm.ext1.forward.backward.func(I, J, L, tau.obs, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, H.n, n)
+    ret.forward.backward <- cthmm.ext1.forward.backward.func(I, J, L, tau.obs, z.acc, y.obs, u.obs, O, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde, H.n, n)
     gamma <- ret.forward.backward$gamma
     nu <- ret.forward.backward$nu
       

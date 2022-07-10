@@ -1,6 +1,6 @@
 
 # M-step
-cthmm.ext1.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta) {
+cthmm.ext1.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta, sufficient.eta.prime) {
   
   # update pi
   pi.tilde <- array(numeric(), dim=c(I))
@@ -35,13 +35,20 @@ cthmm.ext1.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, suffici
     eta.tilde[j+1] <- sum(c(0:(L-1)) * sufficient.eta[j+1,]) / ((L-1) * sum(sufficient.eta[j+1,]))
   }
   
+  # update eta.prime
+  eta.prime.tilde <- array(numeric(), dim=c(J))
+  # for (j in 0:(J-1)) {
+  #   eta.tilde[j+1] <- sum(c(0:(L-1)) * sufficient.eta[j+1,]) / ((L-1) * sum(sufficient.eta[j+1,]))
+  # }
+  
   # for debugging
   # print(pi.tilde)
   # print(Q.tilde)
   # print(mu.tilde)
   # print(eta.tilde)
+  # print(eta.prime.tilde)
   
-  ret <- list("pi.tilde" = pi.tilde, "Q.tilde" = Q.tilde, "mu.tilde" = mu.tilde, "eta.tilde" = eta.tilde)
+  ret <- list("pi.tilde" = pi.tilde, "Q.tilde" = Q.tilde, "mu.tilde" = mu.tilde, "eta.tilde" = eta.tilde, "eta.prime.tilde" = eta.prime.tilde)
   
   return(ret)  
 }

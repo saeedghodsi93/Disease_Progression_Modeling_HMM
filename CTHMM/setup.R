@@ -9,7 +9,7 @@ setup.func <- function() {
   options(width = 80)
   
   # set the conda environment for reticulate
-  use_condaenv("r-reticulate")
+  use_condaenv("base")
   
 }
 
