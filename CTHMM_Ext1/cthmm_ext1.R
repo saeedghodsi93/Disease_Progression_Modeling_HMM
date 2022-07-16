@@ -32,8 +32,8 @@ cthmm.ext1.func <- function(run.algorithm, debugging.mode, latex.table) {
     eta.prime.init  <- ret.set.model.parameters$eta.prime.init
     
     # run for different number of samples
-    N.vals <- c(50)
-    counter.em.max <- 10
+    N.vals <- c(25, 100, 1000, 10000)
+    counter.em.max <- 100
     pi.hat.vals <- array(numeric(), dim=c(length(N.vals), counter.em.max+1, I))
     Q.hat.vals <- array(numeric(), dim=c(length(N.vals), counter.em.max+1, I,I,L))
     mu.hat.vals <- array(numeric(), dim=c(length(N.vals), counter.em.max+1, I))
@@ -108,10 +108,10 @@ cthmm.ext1.func <- function(run.algorithm, debugging.mode, latex.table) {
   }
   
   # use Python for visualization of the data
-  cthmm_visualize_data(H, a, O, tau.true, tau.obs, z.true, z.obs, z.acc, y.obs, u.obs)
+  cthmm_ext1_visualize_data(H, a, O, tau.true, tau.obs, z.true, z.obs, z.acc, y.obs, u.obs)
   
   # use Python for visualization of the results
-  cthmm_visualize_results(I, J, L, N.vals, pi, Q, mu, eta, eta.prime, pi.hat.vals, Q.hat.vals, mu.hat.vals, eta.hat.vals, eta.prime.hat.vals)
+  cthmm_ext1_visualize_results(I, J, L, N.vals, pi, Q, mu, eta, eta.prime, pi.hat.vals, Q.hat.vals, mu.hat.vals, eta.hat.vals, eta.prime.hat.vals)
   
   ret <- list("I" = I, "J" = J, "L" = L, "N.vals" = N.vals, "H" = H, "a" = a, "O" = O, "tau.true" = tau.true, "tau.obs" = tau.obs, "z.true" = z.true, "z.obs" = z.obs, "z.acc" = z.acc, "y.obs" = y.obs, "u.obs" = u.obs, "pi" = pi, "Q" = Q, "mu" = mu, "eta" = eta, "eta.prime" = eta.prime, "pi.hat.vals" = pi.hat.vals, "Q.hat.vals" = Q.hat.vals, "mu.hat.vals" = mu.hat.vals, "eta.hat.vals" = eta.hat.vals, "eta.prime.hat.vals" = eta.prime.hat.vals) 
   

@@ -6,7 +6,7 @@ cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u
   sufficient.Q <- array(0, c(I,I,L,2))
   sufficient.mu <- array(0, c(I,J))
   sufficient.eta <- array(0, c(J,L))
-  sufficient.eta.prime <- array(0, c(J,L))
+  sufficient.eta.prime <- array(0, c(I,L))
   for (n in 1:N) {
     H.n <- H[n]
     
@@ -66,21 +66,34 @@ cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u
     for (i in 1:I) {
       for (j in 0:(J-1)) {
         for (t in 1:H.n) {
-          sufficient.mu[i,j+1] <- sufficient.mu[i,j+1] + gamma[t,i] * sum(y.obs[n,t]==j)
+          if (O[n,t]==0) {
+            sufficient.mu[i,j+1] <- sufficient.mu[i,j+1] + gamma[t,i] * sum(y.obs[n,t]==j)
+          }
         }
       }
     }
     for (j in 0:(J-1)) {
       for (l in 0:(L-1)) {
         for (t in 1:H.n) {
-          sufficient.eta[j+1,l+1] <- sufficient.eta[j+1,l+1] + sum(y.obs[n,t]==j) * sum(u.obs[n,t]==l)
+          if (O[n,t]==0) {
+            sufficient.eta[j+1,l+1] <- sufficient.eta[j+1,l+1] + sum(y.obs[n,t]==j) * sum(u.obs[n,t]==l)
+          }
+        }
+      }
+    }
+    for (i in 1:I) {
+      for (l in 0:(L-1)) {
+        for (t in 1:H.n) {
+          if (O[n,t]==1) {
+            sufficient.eta.prime[i,l+1] <- sufficient.eta.prime[i,l+1] + sum(z.acc[n,t]==i) * sum(u.obs[n,t]==l)
+          }
         }
       }
     }
     
   }
   
-  ret <- list("sufficient.pi" = sufficient.pi, "sufficient.Q" = sufficient.Q, "sufficient.mu" = sufficient.mu, "sufficient.eta" = sufficient.eta)
+  ret <- list("sufficient.pi" = sufficient.pi, "sufficient.Q" = sufficient.Q, "sufficient.mu" = sufficient.mu, "sufficient.eta" = sufficient.eta, "sufficient.eta.prime" = sufficient.eta.prime)
   
   return(ret)
   

@@ -53,54 +53,65 @@ def cthmm_ext1_load_results():
 def cthmm_ext1_visualize_data(H, a, O, tau_true, tau_obs, z_true, z_obs, z_acc, y_obs, u_obs):
   
   # choose a patient for visualization
-  patient_idx = 9
+  patient_idx = 7
   
   # extract the relevant data
   patient_tau_true = tau_true[patient_idx,:]
   patient_z_true = z_true[patient_idx,:]
   patient_tau_obs = tau_obs[patient_idx,:]
   patient_z_obs = z_obs[patient_idx,:]
+  patient_z_acc = z_acc[patient_idx,:]
   patient_y_obs = y_obs[patient_idx,:]
   patient_u_obs = u_obs[patient_idx,:]
-  patient_tau_true = [element for element in patient_tau_true if ~np.isnan(element)]
-  patient_z_true = [int(element) for element in patient_z_true if ~np.isnan(element)]
-  patient_tau_obs = [element for element in patient_tau_obs if ~np.isnan(element)]
-  patient_z_obs = [int(element) for element in patient_z_obs if ~np.isnan(element)]
-  patient_y_obs = [int(element) for element in patient_y_obs if ~np.isnan(element)]
-  patient_u_obs = [int(element) for element in patient_u_obs if ~np.isnan(element)]
+  patient_tau_true = [element if ~np.isnan(element) else element for element in patient_tau_true]
+  patient_z_true = [int(element) if ~np.isnan(element) else element for element in patient_z_true]
+  patient_tau_obs = [element if ~np.isnan(element) else element for element in patient_tau_obs]
+  patient_z_obs = [int(element) if ~np.isnan(element) else element for element in patient_z_obs]
+  patient_z_acc = [int(element) if ~np.isnan(element) else element for element in patient_z_acc]
+  patient_y_obs = [int(element) if ~np.isnan(element) else element for element in patient_y_obs]
+  patient_u_obs = [int(element) if ~np.isnan(element) else element for element in patient_u_obs]
   
-  fig, (ax1, ax2, ax3) = plt.subplots(3, figsize=(10,10), gridspec_kw={'height_ratios': [1, 2, 1]})
+  fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(10,12), gridspec_kw={'height_ratios': [1, 1, 2, 1]})
   l1 = ax1.step(patient_tau_true, patient_z_true, linestyle='--', marker='o', markersize=3, color="maroon", label="z", where="post")
-  l2 = ax2.step(patient_tau_obs, patient_y_obs, linestyle='--', marker='o', markersize=3, color="peru", label="y", where="post")
-  l3 = ax3.step(patient_tau_obs, patient_u_obs, linestyle='--', marker='o', markersize=3, color="seagreen", label="u", where="post")
+  l2 = ax2.step(patient_tau_obs, patient_z_acc, linestyle='--', marker='o', markersize=3, color="darkmagenta", label="z.acc", where="post")
+  l3 = ax3.step(patient_tau_obs, patient_y_obs, linestyle='--', marker='o', markersize=3, color="peru", label="y", where="post")
+  l4 = ax4.step(patient_tau_obs, patient_u_obs, linestyle='--', marker='o', markersize=3, color="seagreen", label="u", where="post")
   ax1.get_xaxis().set_ticks([])
   ax2.get_xaxis().set_ticks([])
+  ax3.get_xaxis().set_ticks([])
   ax1.get_yaxis().set_ticks([1,2,3])
-  ax2.get_yaxis().set_ticks([0,2,4,6,8])
-  ax3.get_yaxis().set_ticks([0,1,2])
+  ax2.get_yaxis().set_ticks([1,2,3])
+  ax3.get_yaxis().set_ticks([0,2,4,6,8])
+  ax4.get_yaxis().set_ticks([0,1,2])
   ax1.set_ylim(1-0.2, 3.2)
-  ax2.set_ylim(-0.5, 9.5)
-  ax3.set_ylim(-0.2, 2.2)
-  ax1.set_xlim(-2, np.max(patient_tau_obs)+2)
-  ax2.set_xlim(-2, np.max(patient_tau_obs)+2)
-  ax3.set_xlim(-2, np.max(patient_tau_obs)+2)
+  ax2.set_ylim(1-0.2, 3.2)
+  ax3.set_ylim(-0.5, 9.5)
+  ax4.set_ylim(-0.2, 2.2)
+  ax1.set_xlim(-2, np.nanmax(patient_tau_obs)+2)
+  ax2.set_xlim(-2, np.nanmax(patient_tau_obs)+2)
+  ax3.set_xlim(-2, np.nanmax(patient_tau_obs)+2)
+  ax4.set_xlim(-2, np.nanmax(patient_tau_obs)+2)
   for t in patient_tau_obs:
     ax1.axvline(x=t, color='gray', linestyle='--', alpha=0.5)
     ax2.axvline(x=t, color='gray', linestyle='--', alpha=0.5)
     ax3.axvline(x=t, color='gray', linestyle='--', alpha=0.5)
+    ax4.axvline(x=t, color='gray', linestyle='--', alpha=0.5)
   ax1.grid(axis='y')
   ax2.grid(axis='y')
   ax3.grid(axis='y')
+  ax4.grid(axis='y')
   fig.suptitle("The underlying health state (z), physician observation (y), and intervention (u) variables", fontsize = "medium")
   ax1.set(ylabel="z")
-  ax2.set(ylabel="y")
-  ax3.set(ylabel="u")
+  ax2.set(ylabel="z.acc")
+  ax3.set(ylabel="y")
+  ax4.set(ylabel="u")
   fig.supxlabel("time", fontsize = "medium")
   plt.subplots_adjust(top=0.93)
   plt.show()
   
   fig.savefig("cthmm_ext1/Results/synthetic_data.pdf", bbox_inches='tight')
-
+  plt.clf()
+  
   return
 
 
@@ -201,6 +212,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.ylabel("RMSE (pi)")
   plt.show()
   fig.savefig("cthmm_ext1/Results/convergence_pi.pdf", bbox_inches='tight')
+  plt.clf()
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -215,6 +227,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.ylabel("RMSE (delta)")
   plt.show()
   fig.savefig("cthmm_ext1/Results/convergence_delta.pdf", bbox_inches='tight')
+  plt.clf()
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -229,6 +242,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.ylabel("RMSE (mu)")
   plt.show()
   fig.savefig("cthmm_ext1/Results/convergence_mu.pdf", bbox_inches='tight')
+  plt.clf()
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -243,6 +257,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.ylabel("RMSE (eta)")
   plt.show()
   fig.savefig("cthmm_ext1/Results/convergence_eta.pdf", bbox_inches='tight')
+  plt.clf()
   
   fig = plt.figure(figsize=(5,4))
   for N_itr in range(len(N_vals)):
@@ -252,11 +267,12 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.ylim(bottom=-0.003)
   plt.grid(True, linestyle='--', linewidth=1, alpha=0.7)
   plt.legend(labels=legend_vals, loc="upper right")
-  plt.title("Convergence of eta_prime to the true value")
+  plt.title("Convergence of eta.prime to the true value")
   plt.xlabel("iteration")
-  plt.ylabel("RMSE (eta_prime)")
+  plt.ylabel("RMSE (eta.prime)")
   plt.show()
   fig.savefig("cthmm_ext1/Results/convergence_eta_prime.pdf", bbox_inches='tight')
+  plt.clf()
   
   return
 

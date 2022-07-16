@@ -133,41 +133,82 @@ cthmm.ext1.forward.backward.func <- function(I, J, L, tau.obs, z.acc, y.obs, u.o
   
   # posterior probability of (z_t, z_{t+1})
   nu <- array(numeric(), c(H.in-1,I,I))
-  temp <- array(numeric(), c(I,I))
-  for (i in 1:I) {
-    for (k in 1:I) {
-      temp[i,k] <- cthmm.ext1.transition.prob.func(Q.in, i, k, u.obs[n,H.in-1]+1, tau.obs[n,H.in]-tau.obs[n,H.in-1]) * cthmm.ext1.emission.prob.func(J, mu.in[k], y.obs[n,H.in]) * cthmm.ext1.intervention.prob.func(L, eta.in[y.obs[n,H.in]+1], u.obs[n,H.in]) * alpha[H.in-1,i]
-    }
-  }
-  for (i in 1:I) {
-    for (k in 1:I) {
-      nu[H.in-1,i,k] <- temp[i,k] / sum(temp)
-    }
-  }
-  for (t in 1:(H.in-2)) {
+  if ((O[n,H.in-1]==0) & (O[n,H.in]==0)) {
     temp <- array(numeric(), c(I,I))
     for (i in 1:I) {
       for (k in 1:I) {
-        temp[i,k] <- cthmm.ext1.transition.prob.func(Q.in, i, k, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t]) * cthmm.ext1.emission.prob.func(J, mu.in[k], y.obs[n,t+1]) * cthmm.ext1.intervention.prob.func(L, eta.in[y.obs[n,t+1]+1], u.obs[n,t+1]) * alpha[t,i] * beta[t+1,k]
+        temp[i,k] <- cthmm.ext1.transition.prob.func(Q.in, i, k, u.obs[n,H.in-1]+1, tau.obs[n,H.in]-tau.obs[n,H.in-1]) * cthmm.ext1.emission.prob.func(J, mu.in[k], y.obs[n,H.in]) * cthmm.ext1.intervention.prob.func(L, eta.in[y.obs[n,H.in]+1], u.obs[n,H.in]) * alpha[H.in-1,i]
       }
     }
     for (i in 1:I) {
       for (k in 1:I) {
-        nu[t,i,k] <- temp[i,k] / sum(temp)
+        nu[H.in-1,i,k] <- temp[i,k] / sum(temp)
+      }
+    }
+  } else if ((O[n,H.in-1]==0) & (O[n,H.in]==1)) {
+    for (i in 1:I) {
+      for (k in 1:I) {
+        nu[H.in-1,i,k] <- gamma[H.in-1, i] * sum(k == z.acc[n,H.in])
+      }
+    }
+  } else if ((O[n,H.in-1]==1) & (O[n,H.in]==0)) {
+    for (i in 1:I) {
+      for (k in 1:I) {
+        nu[H.in-1,i,k] <- gamma[H.in, k] * sum(i == z.acc[n,H.in-1])
+      }
+    }
+  } else {
+    for (i in 1:I) {
+      for (k in 1:I) {
+        nu[H.in-1,i,k] <- sum(i == z.acc[n,H.in-1]) * sum(k == z.acc[n,H.in])
+      }
+    }
+  }
+  for (t in 1:(H.in-2)) {
+    if ((O[n,t]==0) & (O[n,t+1]==0)) {
+      temp <- array(numeric(), c(I,I))
+      for (i in 1:I) {
+        for (k in 1:I) {
+          temp[i,k] <- cthmm.ext1.transition.prob.func(Q.in, i, k, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t]) * cthmm.ext1.emission.prob.func(J, mu.in[k], y.obs[n,t+1]) * cthmm.ext1.intervention.prob.func(L, eta.in[y.obs[n,t+1]+1], u.obs[n,t+1]) * alpha[t,i] * beta[t+1,k]
+        }
+      }
+      for (i in 1:I) {
+        for (k in 1:I) {
+          nu[t,i,k] <- temp[i,k] / sum(temp)
+        }
+      }
+    } else if ((O[n,t]==0) & (O[n,t+1]==1)) {
+      for (i in 1:I) {
+        for (k in 1:I) {
+          nu[t,i,k] <- gamma[t,i] * sum(k == z.acc[n,t+1])
+        }
+      }
+    } else if ((O[n,t]==1) & (O[n,t+1]==0)) {
+      for (i in 1:I) {
+        for (k in 1:I) {
+          nu[t,i,k] <- gamma[t+1,k] * sum(i == z.acc[n,t])
+        }
+      }
+    } else {
+      for (i in 1:I) {
+        for (k in 1:I) {
+          nu[t,i,k] <- sum(i == z.acc[n,t]) * sum(k == z.acc[n,t+1])
+        }
       }
     }
   }
 
   # for debugging  
-  if (n == 10) {
-    print(alpha)
-    print(beta)
-    print(gamma)
+  # if (n == 6) {
+  #   print(alpha)
+  #   print(beta)
+  #   print(gamma)
   #   print(aperm(nu, c(2,3,1)))
-    print(z.acc[n,])
-    print(y.obs[n,])
-    print(u.obs[n,])
-  }
+  #   print(z.obs[n,])
+  #   print(z.acc[n,])
+  #   print(y.obs[n,])
+  #   print(u.obs[n,])
+  # }
   
   ret <- list("alpha" = alpha, "beta" = beta, "gamma" = gamma, "nu" = nu)
   

@@ -36,10 +36,10 @@ cthmm.ext1.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, suffici
   }
   
   # update eta.prime
-  eta.prime.tilde <- array(numeric(), dim=c(J))
-  # for (j in 0:(J-1)) {
-  #   eta.tilde[j+1] <- sum(c(0:(L-1)) * sufficient.eta[j+1,]) / ((L-1) * sum(sufficient.eta[j+1,]))
-  # }
+  eta.prime.tilde <- array(numeric(), dim=c(I))
+  for (i in 1:I) {
+    eta.prime.tilde[i] <- sum(c(0:(L-1)) * sufficient.eta.prime[i,]) / ((L-1) * sum(sufficient.eta.prime[i,]))
+  }
   
   # for debugging
   # print(pi.tilde)
