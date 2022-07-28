@@ -1,17 +1,17 @@
 
 # E-step using the forward-backward algorithm
-cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde) {
+cthmm.ext2.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde) {
   
   sufficient.pi <- array(0, c(I))
   sufficient.Q <- array(0, c(I,I,L,2))
-  sufficient.mu <- array(0, c(I,J))
+  sufficient.mu <- array(0, c(I,L,J))
   sufficient.eta <- array(0, c(J,L))
   sufficient.eta.prime <- array(0, c(I,L))
   for (n in 1:N) {
     H.n <- H[n]
     
     # calculate the posterior probabilities of the end states
-    ret.forward.backward <- cthmm.ext1.forward.backward.func(I, J, L, tau.obs, z.acc, y.obs, u.obs, O, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde, H.n, n)
+    ret.forward.backward <- cthmm.ext2.forward.backward.func(I, J, L, tau.obs, z.acc, y.obs, u.obs, O, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde, H.n, n)
     gamma <- ret.forward.backward$gamma
     nu <- ret.forward.backward$nu
       
@@ -21,7 +21,7 @@ cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u
     for (t in 1:(H.n-1)) {
       
       # calculate the end state conditioned expected number of transitions and sojourn times in each period
-      ret.end.conditioned.expectations <- cthmm.ext1.end.conditioned.expectations.func(I, Q.tilde, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t])
+      ret.end.conditioned.expectations <- cthmm.ext2.end.conditioned.expectations.func(I, Q.tilde, u.obs[n,t]+1, tau.obs[n,t+1]-tau.obs[n,t])
       transition.mat <- ret.end.conditioned.expectations$transition.mat
       sojourn.time <- ret.end.conditioned.expectations$sojourn.time
       
@@ -64,10 +64,16 @@ cthmm.ext1.E.step.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u
       }
     }
     for (i in 1:I) {
-      for (j in 0:(J-1)) {
-        for (t in 1:H.n) {
-          if (O[n,t]==0) {
-            sufficient.mu[i,j+1] <- sufficient.mu[i,j+1] + gamma[t,i] * sum(y.obs[n,t]==j)
+      for (l in 0:(L-1)) {
+        for (j in 0:(J-1)) {
+          for (t in 1:H.n) {
+            if (O[n,t]==0) {
+              if (t>1) {
+                sufficient.mu[i,l+1,j+1] <- sufficient.mu[i,l+1,j+1] + gamma[t,i] * sum(u.obs[n,t-1]==l) * sum(y.obs[n,t]==j)
+              } else {
+                sufficient.mu[i,l+1,j+1] <- sufficient.mu[i,l+1,j+1] + gamma[t,i] * sum(l==0) * sum(y.obs[n,t]==j)
+              }
+            }
           }
         }
       }

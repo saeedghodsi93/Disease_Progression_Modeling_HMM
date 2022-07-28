@@ -1,6 +1,6 @@
 
 # M-step
-cthmm.ext1.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta, sufficient.eta.prime) {
+cthmm.ext2.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta, sufficient.eta.prime) {
   
   # update pi
   pi.tilde <- array(numeric(), dim=c(I))
@@ -24,9 +24,11 @@ cthmm.ext1.M.step.func <- function(I, J, L, sufficient.pi, sufficient.Q, suffici
   }
   
   # update mu
-  mu.tilde <- array(numeric(), dim=c(I))
+  mu.tilde <- array(numeric(), dim=c(I,L))
   for (i in 1:I) {
-    mu.tilde[i] <- sum(c(0:(J-1)) * sufficient.mu[i,]) / ((J-1) * sum(sufficient.mu[i,]))
+    for (l in 0:(L-1)) {
+      mu.tilde[i,l+1] <- sum(c(0:(J-1)) * sufficient.mu[i,l+1,]) / ((J-1) * sum(sufficient.mu[i,l+1,]))
+    }
   }
   
   # update eta

@@ -66,6 +66,14 @@ source("CTHMM_Ext1/e_step.R")
 source("CTHMM_Ext1/m_step.R")
 source("CTHMM_Ext1/em_algorithm.R")
 source("CTHMM_Ext1/cthmm_ext1.R")
+source("CTHMM_Ext2/set_parameters.R")
+source("CTHMM_Ext2/data_generation.R")
+source("CTHMM_Ext2/forward_backward.R")
+source("CTHMM_Ext2/end_conditioned_expectations.R")
+source("CTHMM_Ext2/e_step.R")
+source("CTHMM_Ext2/m_step.R")
+source("CTHMM_Ext2/em_algorithm.R")
+source("CTHMM_Ext2/cthmm_ext2.R")
 source("DTHMM/set_parameters.R")
 source("DTHMM/data_generation.R")
 source("DTHMM/forward_backward.R")
@@ -74,21 +82,26 @@ source("DTHMM/e_step.R")
 source("DTHMM/m_step.R")
 source("DTHMM/em_algorithm.R")
 source("DTHMM/dthmm.R")
+source("Planning/planning.R")
+source("Planning/set_parameters.R")
+source("Planning/posterior_estimation.R")
+source("Planning/expected_disutility.R")
 
 # call the initial setup function
-setup.func()
+setup.func(FALSE)
 
 # add the Python files
 source_python("CTHMM/visualization.py")
 source_python("CTHMM_Ext1/visualization.py")
+source_python("CTHMM_Ext2/visualization.py")
 source_python("DTHMM/visualization.py")
 
-# choose which model to run ("DTHMM", "CTHMM", "CTHMM_Ext1", or "None")
-model.type <- "CTHMM_Ext1"
+# choose which analysis function to run ("DTHMM", "CTHMM", "CTHMM_Ext1", "CTHMM_Ext2", "Planning", or "None")
+analysis.type <- "Planning"
 
 # set the operation modes
 run.algorithm <- TRUE
-debugging.mode <- FALSE
+debugging.mode <- TRUE
 latex.table <- FALSE
    
 ```
@@ -99,27 +112,27 @@ Analyze the DTHMM model:
 ```{r, echo = TRUE, warning = FALSE}
 
 # run the DT-HMM model
-if (model.type == "DTHMM") {
+if (analysis.type == "DTHMM") {
    
-   ret.dthmm <- dthmm.func(run.algorithm, debugging.mode, latex.table)
-   I <- ret.dthmm$I
-   J <- ret.dthmm$J
-   L <- ret.dthmm$L
-   N.vals <- ret.dthmm$N.vals
-   M.vals <- ret.dthmm$M.vals
-   H <- ret.dthmm$H
-   z <- ret.dthmm$z
-   y <- ret.dthmm$y
-   u <- ret.dthmm$u
-   pi <- ret.dthmm$pi
-   Q <- ret.dthmm$Q
-   mu <- ret.dthmm$mu
-   eta <- ret.dthmm$eta
-   pi.hat.vals <- ret.dthmm$pi.hat.vals
-   Q.hat.vals <- ret.dthmm$Q.hat.vals
-   mu.hat.vals <- ret.dthmm$mu.hat.vals
-   eta.hat.vals <- ret.dthmm$eta.hat.vals
-   total.time <- ret.dthmm$total.time
+  ret.dthmm <- dthmm.func(run.algorithm, debugging.mode, latex.table)
+  I <- ret.dthmm$I
+  J <- ret.dthmm$J
+  L <- ret.dthmm$L
+  N.vals <- ret.dthmm$N.vals
+  M.vals <- ret.dthmm$M.vals
+  H <- ret.dthmm$H
+  z <- ret.dthmm$z
+  y <- ret.dthmm$y
+  u <- ret.dthmm$u
+  pi <- ret.dthmm$pi
+  Q <- ret.dthmm$Q
+  mu <- ret.dthmm$mu
+  eta <- ret.dthmm$eta
+  pi.hat.vals <- ret.dthmm$pi.hat.vals
+  Q.hat.vals <- ret.dthmm$Q.hat.vals
+  mu.hat.vals <- ret.dthmm$mu.hat.vals
+  eta.hat.vals <- ret.dthmm$eta.hat.vals
+  total.time <- ret.dthmm$total.time
    
 }
 
@@ -131,30 +144,30 @@ Analyze the CTHMM model:
 ```{r, echo = TRUE, warning = FALSE}
 
 # run the CT-HMM model
-if (model.type == "CTHMM") {
+if (analysis.type == "CTHMM") {
 
-   ret.cthmm <- cthmm.func(run.algorithm, debugging.mode, latex.table)
-   I <- ret.cthmm$I
-   J <- ret.cthmm$J
-   L <- ret.cthmm$L
-   N.vals <- ret.cthmm$N.vals
-   H <- ret.cthmm$H
-   a <- ret.cthmm$a
-   tau.true <- ret.cthmm$tau.true
-   tau.obs <- ret.cthmm$tau.obs
-   z.true <- ret.cthmm$z.true
-   z.obs <- ret.cthmm$z.obs
-   y.obs <- ret.cthmm$y.obs
-   u.obs <- ret.cthmm$u.obs
-   pi <- ret.cthmm$pi
-   Q <- ret.cthmm$Q
-   mu <- ret.cthmm$mu
-   eta <- ret.cthmm$eta
-   pi.hat.vals <- ret.cthmm$pi.hat.vals
-   Q.hat.vals <- ret.cthmm$Q.hat.vals
-   mu.hat.vals <- ret.cthmm$mu.hat.vals
-   eta.hat.vals <- ret.cthmm$eta.hat.vals
-   
+  ret.cthmm <- cthmm.func(run.algorithm, debugging.mode, latex.table)
+  I <- ret.cthmm$I
+  J <- ret.cthmm$J
+  L <- ret.cthmm$L
+  N.vals <- ret.cthmm$N.vals
+  H <- ret.cthmm$H
+  a <- ret.cthmm$a
+  tau.true <- ret.cthmm$tau.true
+  tau.obs <- ret.cthmm$tau.obs
+  z.true <- ret.cthmm$z.true
+  z.obs <- ret.cthmm$z.obs
+  y.obs <- ret.cthmm$y.obs
+  u.obs <- ret.cthmm$u.obs
+  pi <- ret.cthmm$pi
+  Q <- ret.cthmm$Q
+  mu <- ret.cthmm$mu
+  eta <- ret.cthmm$eta
+  pi.hat.vals <- ret.cthmm$pi.hat.vals
+  Q.hat.vals <- ret.cthmm$Q.hat.vals
+  mu.hat.vals <- ret.cthmm$mu.hat.vals
+  eta.hat.vals <- ret.cthmm$eta.hat.vals
+
 }
 
 ```
@@ -165,34 +178,177 @@ Analyze the CTHMM_Ext1 model:
 ```{r, echo = TRUE, warning = FALSE}
 
 # run the CT-HMM Ext1 model
-if (model.type == "CTHMM_Ext1") {
+if (analysis.type == "CTHMM_Ext1") {
 
-   ret.cthmm.ext1 <- cthmm.ext1.func(run.algorithm, debugging.mode, latex.table)
-   I <- ret.cthmm.ext1$I
-   J <- ret.cthmm.ext1$J
-   L <- ret.cthmm.ext1$L
-   N.vals <- ret.cthmm.ext1$N.vals
-   H <- ret.cthmm.ext1$H
-   a <- ret.cthmm.ext1$a
-   tau.true <- ret.cthmm.ext1$tau.true
-   tau.obs <- ret.cthmm.ext1$tau.obs
-   z.true <- ret.cthmm.ext1$z.true
-   z.obs <- ret.cthmm.ext1$z.obs
-   z.acc <- ret.cthmm.ext1$z.acc
-   y.obs <- ret.cthmm.ext1$y.obs
-   u.obs <- ret.cthmm.ext1$u.obs
-   pi <- ret.cthmm.ext1$pi
-   Q <- ret.cthmm.ext1$Q
-   mu <- ret.cthmm.ext1$mu
-   eta <- ret.cthmm.ext1$eta
-   eta.prime <- ret.cthmm.ext1$eta.prime
-   pi.hat.vals <- ret.cthmm.ext1$pi.hat.vals
-   Q.hat.vals <- ret.cthmm.ext1$Q.hat.vals
-   mu.hat.vals <- ret.cthmm.ext1$mu.hat.vals
-   eta.hat.vals <- ret.cthmm.ext1$eta.hat.vals
-   eta.prime.hat.vals <- ret.cthmm.ext1$eta.prime.hat.vals
-   
+  ret.cthmm.ext1 <- cthmm.ext1.func(run.algorithm, debugging.mode, latex.table)
+  I <- ret.cthmm.ext1$I
+  J <- ret.cthmm.ext1$J
+  L <- ret.cthmm.ext1$L
+  N.vals <- ret.cthmm.ext1$N.vals
+  H <- ret.cthmm.ext1$H
+  a <- ret.cthmm.ext1$a
+  tau.true <- ret.cthmm.ext1$tau.true
+  tau.obs <- ret.cthmm.ext1$tau.obs
+  z.true <- ret.cthmm.ext1$z.true
+  z.obs <- ret.cthmm.ext1$z.obs
+  z.acc <- ret.cthmm.ext1$z.acc
+  y.obs <- ret.cthmm.ext1$y.obs
+  u.obs <- ret.cthmm.ext1$u.obs
+  pi <- ret.cthmm.ext1$pi
+  Q <- ret.cthmm.ext1$Q
+  mu <- ret.cthmm.ext1$mu
+  eta <- ret.cthmm.ext1$eta
+  eta.prime <- ret.cthmm.ext1$eta.prime
+  pi.hat.vals <- ret.cthmm.ext1$pi.hat.vals
+  Q.hat.vals <- ret.cthmm.ext1$Q.hat.vals
+  mu.hat.vals <- ret.cthmm.ext1$mu.hat.vals
+  eta.hat.vals <- ret.cthmm.ext1$eta.hat.vals
+  eta.prime.hat.vals <- ret.cthmm.ext1$eta.prime.hat.vals
+
 }
+
+```
+
+
+Analyze the CTHMM_Ext2 model:
+
+```{r, echo = TRUE, warning = FALSE}
+
+# run the CT-HMM Ext2 model
+if (analysis.type == "CTHMM_Ext2") {
+
+  ret.cthmm.ext2 <- cthmm.ext2.func(run.algorithm, debugging.mode, latex.table)
+  I <- ret.cthmm.ext2$I
+  J <- ret.cthmm.ext2$J
+  L <- ret.cthmm.ext2$L
+  N.vals <- ret.cthmm.ext2$N.vals
+  H <- ret.cthmm.ext2$H
+  a <- ret.cthmm.ext2$a
+  tau.true <- ret.cthmm.ext2$tau.true
+  tau.obs <- ret.cthmm.ext2$tau.obs
+  z.true <- ret.cthmm.ext2$z.true
+  z.obs <- ret.cthmm.ext2$z.obs
+  z.acc <- ret.cthmm.ext2$z.acc
+  y.obs <- ret.cthmm.ext2$y.obs
+  u.obs <- ret.cthmm.ext2$u.obs
+  pi <- ret.cthmm.ext2$pi
+  Q <- ret.cthmm.ext2$Q
+  mu <- ret.cthmm.ext2$mu
+  eta <- ret.cthmm.ext2$eta
+  eta.prime <- ret.cthmm.ext2$eta.prime
+  pi.hat.vals <- ret.cthmm.ext2$pi.hat.vals
+  Q.hat.vals <- ret.cthmm.ext2$Q.hat.vals
+  mu.hat.vals <- ret.cthmm.ext2$mu.hat.vals
+  eta.hat.vals <- ret.cthmm.ext2$eta.hat.vals
+  eta.prime.hat.vals <- ret.cthmm.ext2$eta.prime.hat.vals
+
+}
+
+```
+
+
+Planning using the CTHMM model:
+
+```{r, echo = TRUE, warning = FALSE}
+
+# perform planning
+if (analysis.type == "Planning") {
+
+  ret.planning <- planning.func(run.algorithm, debugging.mode, latex.table)
+  I <- ret.planning$I
+  J <- ret.planning$J
+  L <- ret.planning$L
+  N.vals.train <- ret.planning$N.vals.train
+  N.test <- ret.planning$N.test
+  H.train <- ret.planning$H.train
+  H.test <- ret.planning$H.test
+  a.train <- ret.planning$a.train
+  a.test <- ret.planning$a.test
+  tau.true.train <- ret.planning$tau.true.train
+  tau.true.test <- ret.planning$tau.true.test
+  tau.obs.train <- ret.planning$tau.obs.train
+  tau.obs.test <- ret.planning$tau.obs.test
+  z.true.train <- ret.planning$z.true.train
+  z.true.test <- ret.planning$z.true.test
+  z.obs.train <- ret.planning$z.obs.train
+  z.obs.test <- ret.planning$z.obs.test
+  z.acc.train <- ret.planning$z.acc.train
+  z.acc.test <- ret.planning$z.acc.test
+  y.obs.train <- ret.planning$y.obs.train
+  y.obs.test <- ret.planning$y.obs.test
+  u.obs.train <- ret.planning$u.obs.train
+  u.obs.test <- ret.planning$u.obs.test
+  pi <- ret.planning$pi
+  Q <- ret.planning$Q
+  mu <- ret.planning$mu
+  eta <- ret.planning$eta
+  eta.prime <- ret.planning$eta.prime
+  pi.hat.vals <- ret.planning$pi.hat.vals
+  Q.hat.vals <- ret.planning$Q.hat.vals
+  mu.hat.vals <- ret.planning$mu.hat.vals
+  eta.hat.vals <- ret.planning$eta.hat.vals
+  eta.prime.hat.vals <- ret.planning$eta.prime.hat.vals
+  prob.posterior.lastobs <- ret.planning$prob.posterior.lastobs
+  prob.posterior.history <- ret.planning$prob.posterior.history
+  expected.disutility.optimal <- ret.planning$expected.disutility.optimal
+  expected.disutility.lastobs <- ret.planning$expected.disutility.lastobs
+  expected.disutility.history <- ret.planning$expected.disutility.history
+  best.choice.optimal <- ret.planning$best.choice.optimal
+  best.choice.lastobs <- ret.planning$best.choice.lastobs
+  best.choice.history <- ret.planning$best.choice.history
+  actual.disutility.optimal <- ret.planning$actual.disutility.optimal
+  actual.disutility.lastobs <- ret.planning$actual.disutility.lastobs
+  actual.disutility.history <- ret.planning$actual.disutility.history
+}
+
+```
+
+
+```{r, echo = TRUE, warning = FALSE}
+
+print("percent correct estimation:")
+correct <- 0
+for (n in 1:N.test) {
+  if (z.obs.test[n,H.test[n]] == which.max(prob.posterior.lastobs[n,])) {
+    correct <- correct + 1
+  }
+}
+print(100 * correct/N.test)
+correct <- 0
+for (n in 1:N.test) {
+  if (z.obs.test[n,H.test[n]] == which.max(prob.posterior.history[n,])) {
+    correct <- correct + 1
+  }
+}
+print(100 * correct/N.test)
+
+# print(expected.disutility.optimal[1:10,])
+# print(expected.disutility.lastobs[1:10,])
+# print(expected.disutility.history[1:10,])
+  
+# print(best.choice.optimal[1:10])
+# print(best.choice.lastobs[1:10])
+# print(best.choice.history[1:10])
+
+print("percent optimal choice:")
+correct <- 0
+for (n in 1:N.test) {
+  if (best.choice.optimal[n] == best.choice.lastobs[n]) {
+    correct <- correct + 1
+  }
+}
+print(100 * correct/N.test)
+correct <- 0
+for (n in 1:N.test) {
+  if (best.choice.optimal[n] == best.choice.history[n]) {
+    correct <- correct + 1
+  }
+}
+print(100 * correct/N.test)
+
+print("percent disutility error (vs optimal):")
+print(100 * (sum(actual.disutility.lastobs)-sum(actual.disutility.optimal)) / sum(actual.disutility.optimal))
+print(100 * (sum(actual.disutility.history)-sum(actual.disutility.optimal)) / sum(actual.disutility.optimal))
 
 ```
 

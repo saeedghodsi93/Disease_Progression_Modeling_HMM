@@ -1,6 +1,6 @@
 
 # generate synthetic data
-cthmm.ext1.data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, eta.prime, N, H.params, between.visit.time.params, accurate.examination.params) {
+cthmm.ext2.data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, eta.prime, N, H.params, between.visit.time.params, accurate.examination.params) {
   
   # generate the number of observations for each patient
   H <- round(rnorm(N, mean=H.params[1], sd=H.params[2]))
@@ -45,7 +45,7 @@ cthmm.ext1.data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, eta.p
     z.true[n, 1] <- sample(1:I, 1, replace=TRUE, prob=pi)
     z.obs[n, 1] <- z.true[n, 1]
     if (O[n,1] == 0) {
-      y.obs[n, 1] <- rbinom(1, J-1, prob=mu[z.obs[n,1]])
+      y.obs[n, 1] <- rbinom(1, J-1, prob=mu[z.obs[n,1], 1])
       u.obs[n, 1] <- rbinom(1, L-1, prob=eta[y.obs[n,1]+1])
     } else {
       z.acc[n, 1] <- z.obs[n, 1]
@@ -79,7 +79,7 @@ cthmm.ext1.data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, eta.p
       # set the variables at the visit time based on the true underlying health state at the visit time
       z.obs[n, itr+1] <- z.true[n, counter+1]
       if (O[n,itr+1] == 0) {
-        y.obs[n, itr+1] <- rbinom(1, J-1, prob=mu[z.obs[n,itr+1]])
+        y.obs[n, itr+1] <- rbinom(1, J-1, prob=mu[z.obs[n,itr+1], u.obs[n,itr]+1])
         u.obs[n, itr+1] <- rbinom(1, L-1, prob=eta[y.obs[n,itr+1]+1])
       } else{
         z.acc[n, itr+1] <- z.obs[n, itr+1]

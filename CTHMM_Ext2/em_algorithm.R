@@ -1,18 +1,18 @@
 
 # EM algorithm
-cthmm.ext1.EM.algorithm.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.init, Q.init, mu.init, eta.init, eta.prime.init, counter.em.max, debugging.mode) {
+cthmm.ext2.EM.algorithm.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.init, Q.init, mu.init, eta.init, eta.prime.init, counter.em.max, debugging.mode) {
   
   # arrays for keeping track of the parameters
-  pi.hat <- array(numeric(), dim=c(counter.em.max+1,I))
-  Q.hat <- array(numeric(), dim=c(counter.em.max+1,I,I,L))
-  mu.hat <- array(numeric(), dim=c(counter.em.max+1,I))
-  eta.hat <- array(numeric(), dim=c(counter.em.max+1,J))
-  eta.prime.hat <- array(numeric(), dim=c(counter.em.max+1,I))
+  pi.hat <- array(numeric(), dim=c(counter.em.max+1, I))
+  Q.hat <- array(numeric(), dim=c(counter.em.max+1, I,I,L))
+  mu.hat <- array(numeric(), dim=c(counter.em.max+1, I,L))
+  eta.hat <- array(numeric(), dim=c(counter.em.max+1, J))
+  eta.prime.hat <- array(numeric(), dim=c(counter.em.max+1, I))
   
   # save the initial parameters
   pi.hat[1,] <- pi.init
   Q.hat[1,,,] <- Q.init
-  mu.hat[1,] <- mu.init
+  mu.hat[1,,] <- mu.init
   eta.hat[1,] <- eta.init
   eta.prime.hat[1,] <- eta.prime.init
   
@@ -29,7 +29,7 @@ cthmm.ext1.EM.algorithm.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.
     progress.bar(counter.em, counter.em.max, TRUE, debugging.mode)
     
     # E-step 
-    ret.E.step <- cthmm.ext1.E.step.func(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde)
+    ret.E.step <- cthmm.ext2.E.step.func(N, I, J, L, H, a, O, tau.obs, z.acc, y.obs, u.obs, pi.tilde, Q.tilde, mu.tilde, eta.tilde, eta.prime.tilde)
     sufficient.pi <- ret.E.step$sufficient.pi
     sufficient.Q <- ret.E.step$sufficient.Q
     sufficient.mu <- ret.E.step$sufficient.mu
@@ -37,7 +37,7 @@ cthmm.ext1.EM.algorithm.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.
     sufficient.eta.prime <- ret.E.step$sufficient.eta.prime
     
     # M-step
-    ret.M.step <- cthmm.ext1.M.step.func(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta, sufficient.eta.prime)
+    ret.M.step <- cthmm.ext2.M.step.func(I, J, L, sufficient.pi, sufficient.Q, sufficient.mu, sufficient.eta, sufficient.eta.prime)
     pi.tilde <- ret.M.step$pi.tilde
     Q.tilde <- ret.M.step$Q.tilde
     mu.tilde <- ret.M.step$mu.tilde
@@ -47,7 +47,7 @@ cthmm.ext1.EM.algorithm.func <- function(N, I, J, L, H, a, O, tau.obs, z.acc, y.
     # save the current parameters
     pi.hat[counter.em+1,] <- pi.tilde
     Q.hat[counter.em+1,,,] <- Q.tilde
-    mu.hat[counter.em+1,] <- mu.tilde
+    mu.hat[counter.em+1,,] <- mu.tilde
     eta.hat[counter.em+1,] <- eta.tilde
     eta.prime.hat[counter.em+1,] <- eta.prime.tilde
     

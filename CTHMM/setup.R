@@ -1,9 +1,11 @@
 
 # initial setup
-setup.func <- function() {
+setup.func <- function(constant.seed) {
   
   # set the seed
-  set.seed(1834772)
+  if (constant.seed) {
+    set.seed(1834772)
+  }
   
   # set options
   options(width = 80)

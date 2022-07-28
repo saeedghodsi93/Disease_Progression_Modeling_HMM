@@ -8,49 +8,49 @@ import pickle
 
 
 # store the raw data in file
-def cthmm_ext1_store_raw(I, J, L, N_vals, H, a, O, tau_true, tau_obs, z_true, z_obs, z_acc, y_obs, u_obs):
+def cthmm_ext2_store_raw(I, J, L, N_vals, H, a, O, tau_true, tau_obs, z_true, z_obs, z_acc, y_obs, u_obs):
   
   # put the results in a dict and store them in a file
   dict_raw = {"I": I, "J": J, "L": L, "N_vals": N_vals, "H": H, "a": a, "O": O, "tau_true": tau_true, "tau_obs": tau_obs, "z_true": z_true, "z_obs": z_obs, "z_acc": z_acc, "y_obs": y_obs, "u_obs": u_obs}
-  with open('cthmm_ext1/Data/raw.pickle', 'wb') as handle:
+  with open('cthmm_ext2/Data/raw.pickle', 'wb') as handle:
     pickle.dump(dict_raw, handle, protocol=pickle.HIGHEST_PROTOCOL)
   
   return
 
 
 # load the raw data from file
-def cthmm_ext1_load_raw():
+def cthmm_ext2_load_raw():
   
   # load data from file
-  with open('cthmm_ext1/Data/raw.pickle', 'rb') as handle:
+  with open('cthmm_ext2/Data/raw.pickle', 'rb') as handle:
     dict_raw = pickle.load(handle)
   
   return dict_raw
 
 
 # store the EM results in file
-def cthmm_ext1_store_results(pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals):
+def cthmm_ext2_store_results(pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals):
   
   # put the results in a dict and store them in a file
   dict_res = {"pi": pi, "Q": Q, "mu": mu, "eta": eta, "eta_prime": eta_prime, "pi_hat_vals": pi_hat_vals, "Q_hat_vals": Q_hat_vals, "mu_hat_vals": mu_hat_vals, "eta_hat_vals": eta_hat_vals, "eta_prime_hat_vals": eta_prime_hat_vals}
-  with open('cthmm_ext1/Data/res.pickle', 'wb') as handle:
+  with open('cthmm_ext2/Data/res.pickle', 'wb') as handle:
     pickle.dump(dict_res, handle, protocol=pickle.HIGHEST_PROTOCOL)
   
   return
 
 
 # load the stored EM results from file
-def cthmm_ext1_load_results():
+def cthmm_ext2_load_results():
   
   # load data from file
-  with open('cthmm_ext1/Data/res.pickle', 'rb') as handle:
+  with open('cthmm_ext2/Data/res.pickle', 'rb') as handle:
     dict_res = pickle.load(handle)
   
   return dict_res
 
 
-# get the data from cthmm_ext1.R and visualize it
-def cthmm_ext1_visualize_data(H, a, O, tau_true, tau_obs, z_true, z_obs, z_acc, y_obs, u_obs):
+# get the data from cthmm_ext2.R and visualize it
+def cthmm_ext2_visualize_data(H, a, O, tau_true, tau_obs, z_true, z_obs, z_acc, y_obs, u_obs):
   
   # choose a patient for visualization
   patient_idx = 7
@@ -109,14 +109,14 @@ def cthmm_ext1_visualize_data(H, a, O, tau_true, tau_obs, z_true, z_obs, z_acc, 
   plt.subplots_adjust(top=0.93)
   plt.show()
   
-  fig.savefig("cthmm_ext1/Results/synthetic_data.pdf", bbox_inches='tight')
+  fig.savefig("cthmm_ext2/Results/synthetic_data.pdf", bbox_inches='tight')
   plt.clf()
   
   return
 
 
 # KL divergence
-def cthmm_ext1_kl_divergence(p, q):
+def cthmm_ext2_kl_divergence(p, q):
   
   dist = sum(kl_div(p, q))
   
@@ -124,7 +124,7 @@ def cthmm_ext1_kl_divergence(p, q):
 
 
 # calculate the distances between the true variables and the em predicted variables
-def cthmm_ext1_calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals):
+def cthmm_ext2_calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals):
   
   # calculate the distances for each iteration
   dist_N = []
@@ -149,7 +149,7 @@ def cthmm_ext1_calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, e
       eta_prime_hat_itr = eta_prime_hat_vals[N_itr, em_itr,]
       
       # calculate the distance for pi
-      dist_pi.append(cthmm_ext1_kl_divergence(pi, pi_hat_itr))
+      dist_pi.append(cthmm_ext2_kl_divergence(pi, pi_hat_itr))
     
       # calculate the distance for Q
       temp = 0
@@ -176,8 +176,8 @@ def cthmm_ext1_calc_distances(I, J, L, N_vals, num_iterations, pi, Q, mu, eta, e
   return df_dist
 
 
-# get the results from cthmm_ext1.R and visualize them
-def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals):
+# get the results from cthmm_ext2.R and visualize them
+def cthmm_ext2_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals):
   
   # convert the lists to numpy array and correct the integers
   N_vals = [round(N) for N in N_vals]
@@ -191,7 +191,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   num_iterations = pi_hat_vals.shape[1]
   
   # calculate the distances
-  df_dist = cthmm_ext1_calc_distances(round(I), round(J), round(L), N_vals, num_iterations, pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals)
+  df_dist = cthmm_ext2_calc_distances(round(I), round(J), round(L), N_vals, num_iterations, pi, Q, mu, eta, eta_prime, pi_hat_vals, Q_hat_vals, mu_hat_vals, eta_hat_vals, eta_prime_hat_vals)
   
   # define the lists of colors, linestyles, and legends
   color_vals = ["tan", "maroon", "seagreen", "cadetblue"]
@@ -211,7 +211,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.xlabel("iteration")
   plt.ylabel("RMSE (pi)")
   plt.show()
-  fig.savefig("cthmm_ext1/Results/convergence_pi.pdf", bbox_inches='tight')
+  fig.savefig("cthmm_ext2/Results/convergence_pi.pdf", bbox_inches='tight')
   plt.clf()
   
   fig = plt.figure(figsize=(5,4))
@@ -226,7 +226,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.xlabel("iteration")
   plt.ylabel("RMSE (delta)")
   plt.show()
-  fig.savefig("cthmm_ext1/Results/convergence_delta.pdf", bbox_inches='tight')
+  fig.savefig("cthmm_ext2/Results/convergence_delta.pdf", bbox_inches='tight')
   plt.clf()
   
   fig = plt.figure(figsize=(5,4))
@@ -241,7 +241,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.xlabel("iteration")
   plt.ylabel("RMSE (mu)")
   plt.show()
-  fig.savefig("cthmm_ext1/Results/convergence_mu.pdf", bbox_inches='tight')
+  fig.savefig("cthmm_ext2/Results/convergence_mu.pdf", bbox_inches='tight')
   plt.clf()
   
   fig = plt.figure(figsize=(5,4))
@@ -256,7 +256,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.xlabel("iteration")
   plt.ylabel("RMSE (eta)")
   plt.show()
-  fig.savefig("cthmm_ext1/Results/convergence_eta.pdf", bbox_inches='tight')
+  fig.savefig("cthmm_ext2/Results/convergence_eta.pdf", bbox_inches='tight')
   plt.clf()
   
   fig = plt.figure(figsize=(5,4))
@@ -271,7 +271,7 @@ def cthmm_ext1_visualize_results(I, J, L, N_vals, pi, Q, mu, eta, eta_prime, pi_
   plt.xlabel("iteration")
   plt.ylabel("RMSE (eta.prime)")
   plt.show()
-  fig.savefig("cthmm_ext1/Results/convergence_eta_prime.pdf", bbox_inches='tight')
+  fig.savefig("cthmm_ext2/Results/convergence_eta_prime.pdf", bbox_inches='tight')
   plt.clf()
   
   return

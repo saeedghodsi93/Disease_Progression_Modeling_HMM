@@ -1,6 +1,6 @@
 
 # set the model parameters
-cthmm.ext1.set.model.parameters.func <- function(latex.table) {
+cthmm.ext2.set.model.parameters.func <- function(latex.table) {
   
   # the number of possible hidden states, number of possible observations, and number of possible interventions
   I <- 3
@@ -44,7 +44,7 @@ cthmm.ext1.set.model.parameters.func <- function(latex.table) {
   rho[,,3] <- t(rho[,,3])
   
   # the parameters of the emission and intervention distributions
-  mu <- c(0.1, 0.5, 0.9)
+  mu <- array(c(0.1, 0.5, 0.9,  0.1, 0.5, 0.9,  0.1, 0.5, 0.9), dim=c(I, L))
   eta <- c(0.04, 0.15, 0.26, 0.32, 0.43, 0.51, 0.62, 0.77, 0.81, 0.90)
   eta.prime <- c(0.3, 0.65, 0.85)
   
@@ -78,14 +78,14 @@ cthmm.ext1.set.model.parameters.func <- function(latex.table) {
   Q.init[,,3] <- t(Q.init[,,3])
   
   # the parameters of the emission and intervention distributions
-  mu.init <- c(0.45, 0.65, 0.7)
+  mu.init <- array(c(0.45, 0.65, 0.7,  0.45, 0.65, 0.7,  0.45, 0.65, 0.7), dim=c(I, L))
   eta.init <- c(0.01, 0.03, 0.06, 0.08, 0.45, 0.48, 0.51, 0.55, 0.91, 0.97)
   eta.prime.init <- c(0.1, 0.35, 0.95)
   
   
   # print the true and initial parameters in Latex tables
   if (latex.table == TRUE) {
-    cthmm.ext1.latex.calcs.func(I, L, lambda, R, rho, Q, R.init, Q.init)
+    cthmm.ext2.latex.calcs.func(I, L, lambda, R, rho, Q, R.init, Q.init)
   }
   
   ret <- list("I"=I, "J"=J, "L"=L,

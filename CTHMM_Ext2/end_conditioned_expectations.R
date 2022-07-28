@@ -1,6 +1,6 @@
 
 # calculate the integral using the expm method
-cthmm.ext1.calc.integral.func <- function(I, Q.in, l.in, tau.in) {
+cthmm.ext2.calc.integral.func <- function(I, Q.in, l.in, tau.in) {
   
   Q.temp <- Q.in[,, l.in]
   integral <- array(numeric(), dim=c(I,I,I,I))
@@ -20,10 +20,10 @@ cthmm.ext1.calc.integral.func <- function(I, Q.in, l.in, tau.in) {
 
 
 # calculate the expected number of transitions and expected sojourn times between to consecutive visits
-cthmm.ext1.end.conditioned.expectations.func <- function(I, Q.in, l.in, tau.in) {
+cthmm.ext2.end.conditioned.expectations.func <- function(I, Q.in, l.in, tau.in) {
   
   # evaluate the integral
-  integral.mat <- cthmm.ext1.calc.integral.func(I, Q.in, l.in, tau.in)
+  integral.mat <- cthmm.ext2.calc.integral.func(I, Q.in, l.in, tau.in)
   
   # calculate the end state probabilities
   end.state.probs <- expm(tau.in * Q.in[,,l.in])

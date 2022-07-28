@@ -44,7 +44,7 @@ cthmm.set.model.parameters.func <- function(latex.table) {
   rho[,,3] <- t(rho[,,3])
   
   # the parameters of the emission and intervention distributions
-  mu <- c(0.1, 0.5, 0.9)
+  mu <- c(0.3, 0.5, 0.7)
   eta <- c(0.04, 0.15, 0.26, 0.32, 0.43, 0.51, 0.62, 0.77, 0.81, 0.90)
   
   
