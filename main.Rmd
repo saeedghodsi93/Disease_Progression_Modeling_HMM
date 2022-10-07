@@ -46,6 +46,7 @@ library(AER)
 library(expm)
 library(FNN)
 library(msm)
+library(philentropy)
 
 # add the R files
 source("CTHMM/setup.R")
@@ -296,6 +297,7 @@ if (analysis.type == "Planning") {
   best.choice.optimal <- ret.planning$best.choice.optimal
   best.choice.lastobs <- ret.planning$best.choice.lastobs
   best.choice.history <- ret.planning$best.choice.history
+  actual.disutility <- ret.planning$actual.disutility
   actual.disutility.optimal <- ret.planning$actual.disutility.optimal
   actual.disutility.lastobs <- ret.planning$actual.disutility.lastobs
   actual.disutility.history <- ret.planning$actual.disutility.history
@@ -306,6 +308,16 @@ if (analysis.type == "Planning") {
 
 ```{r, echo = TRUE, warning = FALSE}
 
+for (n in 1: N.test) {
+  if (z.obs.test[n,H.test[n]]==3) {
+    # print(n)
+    # print(prob.posterior.lastobs[n,])
+    # print(prob.posterior.history[n,])
+    # print(actual.disutility[n,])
+    # print(expected.disutility.optimal[n,])
+  }
+}
+  
 print("percent correct estimation:")
 correct <- 0
 for (n in 1:N.test) {
@@ -313,14 +325,25 @@ for (n in 1:N.test) {
     correct <- correct + 1
   }
 }
+confmat <- array(0, dim=c(I, I))
+for (n in 1:N.test) {
+  confmat[z.obs.test[n,H.test[n]], which.max(prob.posterior.lastobs[n,])] <- confmat[z.obs.test[n,H.test[n]], which.max(prob.posterior.lastobs[n,])] + 1
+}
 print(100 * correct/N.test)
+print(100 * confmat/N.test)
+
 correct <- 0
 for (n in 1:N.test) {
   if (z.obs.test[n,H.test[n]] == which.max(prob.posterior.history[n,])) {
     correct <- correct + 1
   }
 }
+confmat <- array(0, dim=c(I, I))
+for (n in 1:N.test) {
+  confmat[z.obs.test[n,H.test[n]], which.max(prob.posterior.history[n,])] <- confmat[z.obs.test[n,H.test[n]], which.max(prob.posterior.history[n,])] + 1
+}
 print(100 * correct/N.test)
+print(100 * confmat/N.test)
 
 # print(expected.disutility.optimal[1:10,])
 # print(expected.disutility.lastobs[1:10,])
@@ -337,18 +360,68 @@ for (n in 1:N.test) {
     correct <- correct + 1
   }
 }
+confmat <- array(0, dim=c(L, L))
+for (n in 1:N.test) {
+  confmat[best.choice.optimal[n]+1, best.choice.lastobs[n]+1] <- confmat[best.choice.optimal[n]+1, best.choice.lastobs[n]+1] + 1
+}
 print(100 * correct/N.test)
+print(100 * confmat/N.test)
+
 correct <- 0
 for (n in 1:N.test) {
   if (best.choice.optimal[n] == best.choice.history[n]) {
     correct <- correct + 1
   }
 }
+confmat <- array(0, dim=c(L, L))
+for (n in 1:N.test) {
+  confmat[best.choice.optimal[n]+1, best.choice.history[n]+1] <- confmat[best.choice.optimal[n]+1, best.choice.history[n]+1] + 1
+}
 print(100 * correct/N.test)
+print(100 * confmat/N.test)
 
 print("percent disutility error (vs optimal):")
 print(100 * (sum(actual.disutility.lastobs)-sum(actual.disutility.optimal)) / sum(actual.disutility.optimal))
 print(100 * (sum(actual.disutility.history)-sum(actual.disutility.optimal)) / sum(actual.disutility.optimal))
 
 ```
+
+
+
+```{r, echo = TRUE, warning = FALSE}
+
+for (n in 1:100) {
+  ret.forward <- planning.forward.func(I, J, L, tau.obs.test, y.obs.test, u.obs.test, pi, Q, mu, eta, H.test[n], n, H.test[n]-1)
+  alpha <- ret.forward$alpha
+  # print(n)
+  # print(alpha[H.test[n],z.obs.test[n, H.test[n]]])
+}
+
+for (n in 1:100) {
+  
+  if (z.obs.test[n, H.test[n]] == 3) {
+    
+    ret.forward.backward <- cthmm.forward.backward.func(I, J, L, tau.obs.test, y.obs.test, u.obs.test, pi, Q, mu, eta, H.test[n], n)
+    alpha <- ret.forward.backward$alpha
+    
+    saeed <- array(0, dim=c(I))
+    for (i in 1:I) {
+      for (k in 1:I) {
+        saeed[i] <- saeed[i] + cthmm.transition.prob.func(Q, k, i, u.obs.test[n,H.test[n]-1]+1, tau.obs.test[n,H.test[n]]-tau.obs.test[n,H.test[n]-1]) * alpha[H.test[n]-1,k]
+      }
+    }
+    # print(n)
+    # print(saeed / sum(saeed))
+      
+  }
+}
+
+marginal <- array(0, dim=c(I))
+for (n in 1:N.test) {
+  marginal[z.obs.test[n,H.test[n]]] <- marginal[z.obs.test[n,H.test[n]]] + 1
+}
+print(marginal / N.test)
+
+```
+
 

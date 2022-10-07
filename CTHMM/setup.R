@@ -85,22 +85,32 @@ cthmm.latex.calcs.func <- function(I, L, lambda, R, rho, Q, R.init, Q.init) {
   latex.table.func(Q.init[,,3])
   
   # calculate Q for the example case
-  a <- 50
-  Q.example <- array(0, dim=c(I,I,L))
-  for (l in 0:(L-1)) {
-    for (i in 1:I){
-      for (k in 1:I){
-        if (k != i){
-          Q.example[i,k,l+1] <- lambda[l+1,i] * R[i,k,l+1] * exp(a * rho[i,k,l+1])
+  a.vals <- c(20, 50)
+  for (a in a.vals) {
+    
+    Q.example <- array(0, dim=c(I,I,L))
+    for (l in 0:(L-1)) {
+      for (i in 1:I){
+        for (k in 1:I){
+          if (k != i){
+            Q.example[i,k,l+1] <- lambda[l+1,i] * R[i,k,l+1] * exp(a * rho[i,k,l+1])
+          }
         }
+        temp <- -sum(Q.example[i,,l+1])
+        Q.example[i,i,l+1] <- temp
       }
-      temp <- -sum(Q.example[i,,l+1])
-      Q.example[i,i,l+1] <- temp
     }
+    print("a: ")
+    print(a)
+    
+    print("Q.example: ")
+    latex.table.func(Q.example[,,1])
+    latex.table.func(Q.example[,,2])
+    latex.table.func(Q.example[,,3])
+    
+    print("pi.example: ")
+    print(expm(1000*Q.example[,,1]))
+    
   }
-  print("Q.example: ")
-  latex.table.func(Q.example[,,1])
-  latex.table.func(Q.example[,,2])
-  latex.table.func(Q.example[,,3])
   
 }

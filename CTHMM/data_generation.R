@@ -14,7 +14,7 @@ cthmm.data.generation <- function(I, J, L, pi, lambda, R, Q, mu, eta, N, H.param
   u.obs <- array(numeric(), c(N, max(H)))
   
   # true health state change times, and true health state values
-  max.num.true.changes <- 4 * max(H) * (between.visit.time.params[1] / min(1/lambda))
+  max.num.true.changes <- 10 * max(H) * (between.visit.time.params[1] / min(1/lambda))
   tau.true <- array(numeric(), c(N, max.num.true.changes))
   z.true <- array(numeric(), c(N, max.num.true.changes))
   

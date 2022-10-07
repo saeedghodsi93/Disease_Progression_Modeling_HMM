@@ -9,16 +9,13 @@ planning.set.model.parameters.func <- function(latex.table) {
   
   ##### set the true model parameters
   
-  # the initial probability of the hidden state
-  pi <- c(0.25, 0.45, 0.30)
-  
   # the parameters of the generator matrix
-  lambda <- rbind(c(1/13, 1/6, 1/20),
-                  c(1/9, 1/10, 1/14),
-                  c(1/4, 1/12, 1/7))
-  R <- array(c(0, 0.9, 0.1,  0.3, 0, 0.7,  0.1, 0.9, 0,
-               0, 0.7, 0.3,  0.65, 0, 0.35,  0.3, 0.7, 0,
-               0, 0.6, 0.4,  0.55, 0, 0.45,  0.5, 0.5, 0), dim=c(I, I, L))
+  lambda <- rbind(c(1/18, 1/5, 1/25),
+                  c(1/9, 1/11, 1/10),
+                  c(1/4, 1/8, 1/6))
+  R <- array(c(0, 0.9, 0.1,  0.2, 0, 0.8,  0.1, 0.9, 0,
+               0, 0.7, 0.3,  0.65, 0, 0.35,  0.15, 0.85, 0,
+               0, 0.55, 0.45,  0.5, 0, 0.5,  0.6, 0.4, 0), dim=c(I, I, L))
   R[,,1] <- t(R[,,1])
   R[,,2] <- t(R[,,2])
   R[,,3] <- t(R[,,3])
@@ -43,9 +40,12 @@ planning.set.model.parameters.func <- function(latex.table) {
   rho[,,2] <- t(rho[,,2])
   rho[,,3] <- t(rho[,,3])
   
+  # the initial probability of the hidden state (steady-state probability associated with u=0 for a long time)
+  pi <- expm(10000*Q[,,1])[1,]
+  
   # the parameters of the emission and intervention distributions
-  mu <- c(0.3, 0.5, 0.7)
-  eta <- c(0.04, 0.15, 0.26, 0.32, 0.43, 0.51, 0.62, 0.77, 0.81, 0.90)
+  mu <- c(0.45, 0.55, 0.75)
+  eta <- c(0.04, 0.11, 0.19, 0.32, 0.41, 0.47, 0.63, 0.77, 0.81, 0.90)
   
   
   ##### set the initial model parameters  
