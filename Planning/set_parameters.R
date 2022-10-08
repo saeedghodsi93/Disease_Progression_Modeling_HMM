@@ -41,7 +41,7 @@ planning.set.model.parameters.func <- function(latex.table) {
   rho[,,3] <- t(rho[,,3])
   
   # the initial probability of the hidden state (steady-state probability associated with u=0 for a long time)
-  pi <- expm(10000*Q[,,1])[1,]
+  pi <- expm(100000*Q[,,1])[1,]
   
   # the parameters of the emission and intervention distributions
   mu <- c(0.45, 0.55, 0.75)
